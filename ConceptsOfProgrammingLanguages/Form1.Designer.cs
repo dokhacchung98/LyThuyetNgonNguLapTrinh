@@ -29,27 +29,17 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.automataView = new Automata.AutomataView();
             this.btnAddState = new System.Windows.Forms.Button();
             this.itemCurve = new System.Windows.Forms.ToolStripMenuItem();
             this.itemFinalState = new System.Windows.Forms.ToolStripMenuItem();
             this.itemRemoveSelector = new System.Windows.Forms.ToolStripMenuItem();
             this.selectableContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnAddArrow = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
+            this.automataView = new Automata.AutomataView();
+            this.txtParametor = new System.Windows.Forms.TextBox();
             this.selectableContextMenu.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
             this.SuspendLayout();
-            // 
-            // automataView
-            // 
-            this.automataView.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.automataView.Location = new System.Drawing.Point(0, 1);
-            this.automataView.Name = "automataView";
-            this.automataView.Size = new System.Drawing.Size(658, 658);
-            this.automataView.TabIndex = 0;
-            this.automataView.TabStop = false;
-            this.automataView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.automataView_MouseClick);
-            this.automataView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseDown);
             // 
             // btnAddState
             // 
@@ -101,6 +91,29 @@
             this.btnAddArrow.UseVisualStyleBackColor = true;
             this.btnAddArrow.Click += new System.EventHandler(this.BtnAddArrow_Click);
             // 
+            // automataView
+            // 
+            this.automataView.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.automataView.endPoint = new System.Drawing.Point(0, 0);
+            this.automataView.isEnableMouseHere = true;
+            this.automataView.Location = new System.Drawing.Point(0, 1);
+            this.automataView.Name = "automataView";
+            this.automataView.Size = new System.Drawing.Size(658, 658);
+            this.automataView.startPoint = new System.Drawing.Point(0, 0);
+            this.automataView.TabIndex = 0;
+            this.automataView.TabStop = false;
+            this.automataView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.automataView_MouseClick);
+            this.automataView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseDown);
+            this.automataView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseMove);
+            this.automataView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseUp);
+            // 
+            // txtParametor
+            // 
+            this.txtParametor.Location = new System.Drawing.Point(0, 0);
+            this.txtParametor.Name = "txtParametor";
+            this.txtParametor.Size = new System.Drawing.Size(100, 20);
+            this.txtParametor.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,11 +122,12 @@
             this.Controls.Add(this.btnAddArrow);
             this.Controls.Add(this.btnAddState);
             this.Controls.Add(this.automataView);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.automataView)).EndInit();
             this.selectableContextMenu.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.automataView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -127,6 +141,7 @@
         private System.Windows.Forms.ToolStripMenuItem itemRemoveSelector;
         private System.Windows.Forms.ContextMenuStrip selectableContextMenu;
         private System.Windows.Forms.Button btnAddArrow;
+        private System.Windows.Forms.TextBox txtParametor;
     }
 }
 

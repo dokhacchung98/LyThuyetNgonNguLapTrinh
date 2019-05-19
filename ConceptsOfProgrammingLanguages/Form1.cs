@@ -17,7 +17,8 @@ namespace ConceptsOfProgrammingLanguages
         private IList<State> _State_arr = new List<State>();
         Selectable _selectable;
         private int _lastIndexOfState = 0;
-        private bool _isMoveInAutomata = true;
+        private State _sourceState = null;
+        private State _destinationState = null;
         public Form1()
         {
             InitializeComponent();
@@ -30,19 +31,19 @@ namespace ConceptsOfProgrammingLanguages
             _lastIndexOfState++;
             automataView.States.Add(state);
 
-            var state1 = new State("q" + 4);
-            var state2 = new State("q" + 5);
+            //var state1 = new State("q" + 4);
+            //var state2 = new State("q" + 5);
 
-            automataView.States.Add(state1);
-            automataView.States.Add(state2);
+            //automataView.States.Add(state1);
+            //automataView.States.Add(state2);
 
-            state1.AddTransition('a', state2);
-            state2.AddTransition('b', state2);
-            state2.AddTransition('c', state2);
-            state2.AddTransition('e', state2);
+            //state1.AddTransition('a', state2);
+            //state2.AddTransition('b', state2);
+            //state2.AddTransition('c', state2);
+            //state2.AddTransition('e', state2);
 
-            automataView.SetStartState(state1);
-            automataView.SetFinalState(state2);
+            //automataView.SetStartState(state1);
+            //automataView.SetFinalState(state2);
 
             automataView.BuildAutomata();
             automataView.Refresh();
@@ -110,14 +111,86 @@ namespace ConceptsOfProgrammingLanguages
             automataView.Refresh();
         }
 
+
+        private bool _isMouseDown = false;
         private void AutomataView_MouseDown(object sender, MouseEventArgs e)
         {
+            if (!automataView.isEnableMouseHere)
+            {
+                automataView.startPoint = e.Location;
+                _isMouseDown = true;
 
+                foreach (var item in _State_arr)
+                {
+                    if (item.HitTest(e.Location, automataView.Graphics))
+                    {
+                        _sourceState = item;
+                        break;
+                    }
+                }
+            }
         }
 
         private void BtnAddArrow_Click(object sender, EventArgs e)
         {
             automataView.isEnableMouseHere = !automataView.isEnableMouseHere;
+            if (!automataView.isEnableMouseHere)
+            {
+                btnAddArrow.BackColor = Color.BlueViolet;
+            }
+            else
+            {
+                btnAddArrow.BackColor = Color.Transparent;
+            }
+        }
+
+        private void AutomataView_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (_isMouseDown)
+            {
+                automataView.endPoint = e.Location;
+                Refresh();
+            }
+        }
+
+        private void AutomataView_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (_isMouseDown && !automataView.isEnableMouseHere)
+            {
+                automataView.endPoint = e.Location;
+                _isMouseDown = false;
+
+                if (_sourceState != null)
+                {
+                    foreach (var item in _State_arr)
+                    {
+                        if (item.HitTest(e.Location, automataView.Graphics))
+                        {
+                            _destinationState = item;
+                            break;
+                        }
+                    }
+                    if (_destinationState != null)
+                    {
+                        char resultForm = new char();
+                        using (FormInputValue form = new FormInputValue())
+                        {
+                            if (form.ShowDialog() == DialogResult.OK)
+                            {
+                                resultForm = form.Result;
+                            }
+                        }
+                        if (!string.IsNullOrEmpty(resultForm.ToString()) && !resultForm.Equals('\0'))
+                        {
+                            _sourceState.AddTransition(resultForm, _destinationState);
+                            automataView.BuildAutomata();
+                        }
+                    }
+                }
+            }
+
+            automataView.startPoint = automataView.endPoint = AutomataView.InitPoint;
+            automataView.Refresh();
         }
     }
 }

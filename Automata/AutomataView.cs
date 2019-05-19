@@ -830,6 +830,14 @@ namespace Automata
             redPen.Dispose();
             connectorPen.Dispose();
             arrowBrush.Dispose();
+
+
+            if (!isEnableMouseHere)
+            {
+                Pen p = new Pen(Color.Red, 2);
+                pe.Graphics.DrawLine(p, startPoint.X, startPoint.Y, endPoint.X, endPoint.Y);
+                p.Dispose();
+            }
         }
 
         private void OnAnimatePaint(Graphics g)
@@ -903,5 +911,10 @@ namespace Automata
 
         //Tự thêm các thuộc tính sau:
         public bool isEnableMouseHere { get; set; } = true;
+        public Point startPoint { get; set; }
+        public Point endPoint { get; set; }
+        public static Point InitPoint = new Point(0, 0);
+
+        public Graphics Graphics { get { return _automatGraphics; } }
     }
 }
