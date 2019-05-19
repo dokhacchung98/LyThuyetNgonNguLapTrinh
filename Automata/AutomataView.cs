@@ -916,5 +916,18 @@ namespace Automata
         public static Point InitPoint = new Point(0, 0);
 
         public Graphics Graphics { get { return _automatGraphics; } }
+
+        public IList<StateConnector> GetListConnector()
+        {
+            IList<StateConnector> list = new List<StateConnector>();
+            foreach (var item in _selectables)
+            {
+                if (item is StateConnector)
+                {
+                    list.Add((StateConnector)item);
+                }
+            }
+            return list;
+        }
     }
 }

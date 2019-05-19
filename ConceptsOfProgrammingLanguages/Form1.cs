@@ -13,7 +13,6 @@ namespace ConceptsOfProgrammingLanguages
 {
     public partial class Form1 : Form
     {
-        private string[] _characters = { "a", "b" };
         private IList<State> _State_arr = new List<State>();
         Selectable _selectable;
         private int _lastIndexOfState = 0;
@@ -26,29 +25,32 @@ namespace ConceptsOfProgrammingLanguages
 
         private void BtnAddState_Click(object sender, EventArgs e)
         {
-            var state = new State("q" + _lastIndexOfState);
-            _State_arr.Add(state);
-            _lastIndexOfState++;
-            automataView.States.Add(state);
+            AddNewState();
+        }
 
-            //var state1 = new State("q" + 4);
-            //var state2 = new State("q" + 5);
-
-            //automataView.States.Add(state1);
-            //automataView.States.Add(state2);
-
-            //state1.AddTransition('a', state2);
-            //state2.AddTransition('b', state2);
-            //state2.AddTransition('c', state2);
-            //state2.AddTransition('e', state2);
-
-            //automataView.SetStartState(state1);
-            //automataView.SetFinalState(state2);
+        private void InitProject()
+        {
+            foreach (var item in _State_arr)
+            {
+                automataView.DeleteSelectsable(item);
+            }
+            _State_arr.Clear();
+            _lastIndexOfState = 0;
 
             automataView.BuildAutomata();
             automataView.Refresh();
         }
 
+        private void AddNewState()
+        {
+            var state = new State("q" + _lastIndexOfState);
+            _State_arr.Add(state);
+            _lastIndexOfState++;
+            automataView.States.Add(state);
+
+            automataView.BuildAutomata();
+            automataView.Refresh();
+        }
         private void Form1_Load(object sender, EventArgs e)
         {
             automataView.ItemSelected += automataView_ItemSelected;
@@ -191,6 +193,94 @@ namespace ConceptsOfProgrammingLanguages
 
             automataView.startPoint = automataView.endPoint = AutomataView.InitPoint;
             automataView.Refresh();
+        }
+
+        private void BtnConvert_Click(object sender, EventArgs e)
+        {
+            DetectFinalState();
+        }
+
+        private void DetectFinalState()
+        {
+            IList<State> listFinalState = new List<State>();
+            foreach (var item in _State_arr)
+            {
+                if (automataView.IsFinalState(item))
+                {
+                    listFinalState.Add(item);
+                }
+            }
+            if (listFinalState.Count == 0)
+            {
+                MessageBox.Show("Lỗi: Không có trạng thái kết thúc");
+                return;
+            }
+            else if (listFinalState.Count > 1)
+            {
+                CreateSigleFinalState(listFinalState);
+            }
+            CreateTransitionAllState();
+        }
+
+        private void CreateTransitionAllState()
+        {
+            IList<ItemTableConnector> listItemConnector = new List<ItemTableConnector>();
+            var listStateConnector = automataView.GetListConnector();
+
+            foreach (var item1 in _State_arr)
+            {
+                foreach (var item2 in _State_arr)
+                {
+                    string value;
+                    StateConnector tmp = null;
+                    foreach (var item in listStateConnector)
+                    {
+                        if (item.SourceState == item1 && item.DestinationState == item2)
+                        {
+                            tmp = item;
+                            break;
+                        }
+                    }
+                    if (tmp != null)
+                    {
+                        value = tmp.Label.Text;
+                    }
+                    else
+                    {
+                        value = Extention.VALUE_NULL.ToString();
+                        item1.AddTransition(Extention.VALUE_NULL, item2);
+                    }
+
+                    listItemConnector.Add(new ItemTableConnector()
+                    {
+                        SourceState = item1,
+                        DestinationState = item2,
+                        Value = value
+                    });
+                }
+            }
+            automataView.BuildAutomata();
+            automataView.Refresh();
+        }
+
+        private void CreateSigleFinalState(IList<State> listFinalState)
+        {
+            AddNewState();
+            var stateFinal = _State_arr.ElementAt(_State_arr.Count - 1);
+            automataView.SetFinalState(stateFinal);
+
+            foreach (var item in listFinalState)
+            {
+                automataView.SetFinalState(item, false);
+                item.AddTransition(Extention.VALUE_E, stateFinal);
+            }
+            automataView.BuildAutomata();
+            automataView.Refresh();
+        }
+
+        private void BtnRemove_Click(object sender, EventArgs e)
+        {
+            InitProject();
         }
     }
 }

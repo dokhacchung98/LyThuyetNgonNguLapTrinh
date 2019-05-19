@@ -37,6 +37,8 @@
             this.btnAddArrow = new System.Windows.Forms.Button();
             this.automataView = new Automata.AutomataView();
             this.txtParametor = new System.Windows.Forms.TextBox();
+            this.btnConvert = new System.Windows.Forms.Button();
+            this.btnRemove = new System.Windows.Forms.Button();
             this.selectableContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
             this.SuspendLayout();
@@ -83,7 +85,7 @@
             // 
             // btnAddArrow
             // 
-            this.btnAddArrow.Location = new System.Drawing.Point(138, 667);
+            this.btnAddArrow.Location = new System.Drawing.Point(179, 667);
             this.btnAddArrow.Name = "btnAddArrow";
             this.btnAddArrow.Size = new System.Drawing.Size(116, 43);
             this.btnAddArrow.TabIndex = 2;
@@ -114,17 +116,40 @@
             this.txtParametor.Size = new System.Drawing.Size(100, 20);
             this.txtParametor.TabIndex = 0;
             // 
+            // btnConvert
+            // 
+            this.btnConvert.Location = new System.Drawing.Point(354, 667);
+            this.btnConvert.Name = "btnConvert";
+            this.btnConvert.Size = new System.Drawing.Size(116, 43);
+            this.btnConvert.TabIndex = 3;
+            this.btnConvert.Text = "Chuyển đổi";
+            this.btnConvert.UseVisualStyleBackColor = true;
+            this.btnConvert.Click += new System.EventHandler(this.BtnConvert_Click);
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.Location = new System.Drawing.Point(530, 665);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(116, 43);
+            this.btnRemove.TabIndex = 4;
+            this.btnRemove.Text = "Xóa dữ liệu";
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Click += new System.EventHandler(this.BtnRemove_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1058, 722);
+            this.ClientSize = new System.Drawing.Size(658, 722);
+            this.Controls.Add(this.btnRemove);
+            this.Controls.Add(this.btnConvert);
             this.Controls.Add(this.btnAddArrow);
             this.Controls.Add(this.btnAddState);
             this.Controls.Add(this.automataView);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.RightToLeftLayout = true;
+            this.Text = "Phạm Tiến Nam - Đỗ Khắc Chung : FA to RE";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.selectableContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.automataView)).EndInit();
@@ -142,6 +167,8 @@
         private System.Windows.Forms.ContextMenuStrip selectableContextMenu;
         private System.Windows.Forms.Button btnAddArrow;
         private System.Windows.Forms.TextBox txtParametor;
+        private System.Windows.Forms.Button btnConvert;
+        private System.Windows.Forms.Button btnRemove;
     }
 }
 

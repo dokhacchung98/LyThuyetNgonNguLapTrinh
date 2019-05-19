@@ -24,9 +24,13 @@ namespace ConceptsOfProgrammingLanguages
             if (!string.IsNullOrEmpty(txtValue.Text))
             {
                 Result = char.Parse(txtValue.Text);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
             }
+            else
+            {
+                Result = Extention.VALUE_E;
+            }
+            this.DialogResult = DialogResult.OK;
+                this.Close();
         }
     }
 }
