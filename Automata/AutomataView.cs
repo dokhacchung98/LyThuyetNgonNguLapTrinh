@@ -929,5 +929,20 @@ namespace Automata
             }
             return list;
         }
+
+        public void SetStateConnectorInList(StateConnector stateConnector)
+        {
+            foreach (var item in _selectables)
+            {
+                if (item is StateConnector)
+                {
+                    if ((StateConnector)item == stateConnector)
+                    {
+                        _selectables[Array.IndexOf(_selectables, item)] = stateConnector;
+                        return;
+                    }
+                }
+            }
+        }
     }
 }

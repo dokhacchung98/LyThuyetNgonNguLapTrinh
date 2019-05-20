@@ -39,8 +39,10 @@
             this.txtParametor = new System.Windows.Forms.TextBox();
             this.btnConvert = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
+            this.gridView = new System.Windows.Forms.DataGridView();
             this.selectableContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
             this.SuspendLayout();
             // 
             // btnAddState
@@ -136,11 +138,20 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.BtnRemove_Click);
             // 
+            // gridView
+            // 
+            this.gridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gridView.Location = new System.Drawing.Point(665, 1);
+            this.gridView.Name = "gridView";
+            this.gridView.Size = new System.Drawing.Size(337, 658);
+            this.gridView.TabIndex = 5;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(658, 722);
+            this.ClientSize = new System.Drawing.Size(1003, 722);
+            this.Controls.Add(this.gridView);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnConvert);
             this.Controls.Add(this.btnAddArrow);
@@ -153,6 +164,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.selectableContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.automataView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -169,6 +181,7 @@
         private System.Windows.Forms.TextBox txtParametor;
         private System.Windows.Forms.Button btnConvert;
         private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.DataGridView gridView;
     }
 }
 

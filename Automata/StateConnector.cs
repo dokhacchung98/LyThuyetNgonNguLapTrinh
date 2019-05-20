@@ -216,7 +216,7 @@ namespace Automata
             var slope = Math.Atan(dy / dx);
             if (slope >= 0)
                 initPt.Offset(0, -ConnectorLabel.EstimatedHeight);
-            _connectorLabel.Position = initPt;      
+            _connectorLabel.Position = initPt;
 
         }
     }

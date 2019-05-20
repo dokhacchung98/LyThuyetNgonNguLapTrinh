@@ -39,6 +39,11 @@ namespace ConceptsOfProgrammingLanguages
 
             automataView.BuildAutomata();
             automataView.Refresh();
+            _isCreateFinalState = false;
+            _isCreateAllStateConnector = false;
+            _isGroupConnector = false;
+            btnConvert.Text = "Chuyển đổi";
+            gridView.DataSource = new DataTable();
         }
 
         private void AddNewState()
@@ -197,8 +202,23 @@ namespace ConceptsOfProgrammingLanguages
 
         private void BtnConvert_Click(object sender, EventArgs e)
         {
-            DetectFinalState();
+            if (!_isCreateFinalState)
+            {
+                DetectFinalState();
+            }
+            else if (_isCreateFinalState && !_isCreateAllStateConnector)
+            {
+                CreateTransitionAllState();
+            }
+            else if (_isCreateAllStateConnector && _isCreateFinalState && !_isGroupConnector)
+            {
+                GroupStateConnector();
+            }
         }
+
+        private bool _isCreateFinalState = false;
+        private bool _isCreateAllStateConnector = false;
+        private bool _isGroupConnector = false;
 
         private void DetectFinalState()
         {
@@ -218,8 +238,27 @@ namespace ConceptsOfProgrammingLanguages
             else if (listFinalState.Count > 1)
             {
                 CreateSigleFinalState(listFinalState);
+                _isCreateFinalState = true;
             }
-            CreateTransitionAllState();
+            else if (listFinalState.Count == 1)
+            {
+                _isCreateFinalState = true;
+                CreateTransitionAllState();
+            }
+            btnConvert.Text = "Bước tiếp";
+        }
+
+        private void GroupStateConnector()
+        {
+            foreach (var item in automataView.GetListConnector())
+            {
+                if (item.Label.Text.Contains(','))
+                {
+                    automataView.SetStateConnectorInList(FaToReConverter.GrossConnector(item));
+                }
+            }
+            _isGroupConnector = true;
+            automataView.Refresh();
         }
 
         private void CreateTransitionAllState()
@@ -259,8 +298,29 @@ namespace ConceptsOfProgrammingLanguages
                     });
                 }
             }
+
+            _isCreateAllStateConnector = true;
+
+            CreateDataTable(listItemConnector);
+
             automataView.BuildAutomata();
             automataView.Refresh();
+        }
+
+        private void CreateDataTable(IList<ItemTableConnector> listItemConnector)
+        {
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("Trạng thái bắt đầu");
+            dt.Columns.Add("Trạng thái kết thúc");
+            dt.Columns.Add("Giá trị");
+
+            foreach (var item in listItemConnector)
+            {
+                dt.Rows.Add(item.SourceState.Label, item.DestinationState.Label, item.Value);
+            }
+
+            gridView.DataSource = dt;
         }
 
         private void CreateSigleFinalState(IList<State> listFinalState)

@@ -12,9 +12,9 @@ namespace Automata
         private const string FATAL_EXCEPTION = "Exception is thrown in an unexpected way";
         int _mouse_dx, _mouse_dy;                               // độ dời chuyển chuột
         private StringBuilder _StringBuilder;                   // tên nhãn, có thể gồm nhiều chữ cái của bảng chữ cái cách nhau bởi dấu phảy
-        private static Font _labelFont = new Font("Arial", 
+        private static Font _labelFont = new Font("Arial",
                                                     Config.LABEL_FONT_SIZE,
-                                                    FontStyle.Bold, 
+                                                    FontStyle.Bold,
                                                     GraphicsUnit.Point
                                                  );
         private StateConnector _connector;                      // connector mà nhãn này gắn với
@@ -80,7 +80,7 @@ namespace Automata
                         connector1.GetOtherState(_connector.DestinationState) != null))
                     {
                         _mouse_dx = e.X - _Position.X;
-                        _mouse_dy = e.Y - _Position.Y;                       
+                        _mouse_dy = e.Y - _Position.Y;
                         return true;
                     }
                 }
@@ -145,7 +145,7 @@ namespace Automata
             {
                 var curveConnector = _connector as CurvedStateConnector;
                 curveConnector.CalcBezierPoint();
-                _Position = curveConnector.BezierPoint +_OffsetFromBezier;
+                _Position = curveConnector.BezierPoint + _OffsetFromBezier;
             }
             else
             {
@@ -187,8 +187,8 @@ namespace Automata
                 // dựa vào tam giac đồng dạng
                 */
                 // _Position.X = (int)((_movePoint.X - _anchorPoint.X)/2
-               _Position.X = (_connector.DestinationState.Position.X + _connector.SourceState.Position.X) / 2 + _OffsetFromBezier.Height;
-               _Position.Y = (_connector.DestinationState.Position.Y + _connector.SourceState.Position.Y) / 2 + _OffsetFromBezier.Width;
+                _Position.X = (_connector.DestinationState.Position.X + _connector.SourceState.Position.X) / 2 + _OffsetFromBezier.Height;
+                _Position.Y = (_connector.DestinationState.Position.Y + _connector.SourceState.Position.Y) / 2 + _OffsetFromBezier.Width;
             }
 
             /*base.HandleMouseEvent(sender, sourceChain, e);*/
@@ -200,6 +200,10 @@ namespace Automata
             get
             {
                 return _StringBuilder.ToString();
+            }
+            set
+            {
+                _StringBuilder.Clear().Append(value);
             }
 
         }
