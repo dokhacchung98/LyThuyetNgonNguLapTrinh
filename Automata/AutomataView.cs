@@ -944,5 +944,44 @@ namespace Automata
                 }
             }
         }
+
+        public StateConnector GetStateConnectorByState(State from, State to)
+        {
+            foreach (var item in _selectables)
+            {
+                if (item is StateConnector)
+                {
+                    if (((StateConnector)item).SourceState == from && ((StateConnector)item).DestinationState == to)
+                    {
+                        return (StateConnector)item;
+                    }
+                }
+            }
+            return null;
+        }
+
+        public IList<StateConnector> GetListStateConnectorBySigleState(State state, bool isSource)
+        {
+            IList<StateConnector> list = new List<StateConnector>();
+            foreach (var item in _selectables)
+            {
+                if (item is StateConnector)
+                {
+                    if (isSource && ((StateConnector)item).SourceState == state)
+                    {
+                        list.Add((StateConnector)item);
+                    }
+                    else if (!isSource && ((StateConnector)item).DestinationState == state)
+                    {
+                        list.Add((StateConnector)item);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public void AddConnector(State source,State destination, string text)
+        {
+        }
     }
 }

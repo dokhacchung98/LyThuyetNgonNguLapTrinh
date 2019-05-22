@@ -52,7 +52,7 @@ namespace Automata
         public override bool TrackMouse(object sender, List<BaseMouseHandler> sourceChain, System.Windows.Forms.MouseEventArgs e)
         {
             var enumerator = sourceChain.GetEnumerator();
-            double current;
+            //double current;
             // nếu do chính nhãn bị dịch chuyển
             if (!enumerator.MoveNext())
             {

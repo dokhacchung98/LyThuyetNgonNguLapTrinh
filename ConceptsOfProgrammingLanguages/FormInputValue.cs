@@ -21,6 +21,19 @@ namespace ConceptsOfProgrammingLanguages
 
         private void BtnSend_Click(object sender, EventArgs e)
         {
+            ActionInput();
+        }
+
+        private void BtnSend_Click(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                ActionInput();
+            }
+        }
+
+        private void ActionInput()
+        {
             if (!string.IsNullOrEmpty(txtValue.Text))
             {
                 if ((((int)char.Parse(txtValue.Text)) >= 97 && ((int)char.Parse(txtValue.Text)) <= 122) || (((int)char.Parse(txtValue.Text)) >= 48 && ((int)char.Parse(txtValue.Text)) <= 57))

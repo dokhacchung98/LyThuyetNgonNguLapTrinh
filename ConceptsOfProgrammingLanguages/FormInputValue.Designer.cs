@@ -40,6 +40,7 @@
             this.txtValue.Name = "txtValue";
             this.txtValue.Size = new System.Drawing.Size(158, 20);
             this.txtValue.TabIndex = 0;
+            this.txtValue.KeyDown += new System.Windows.Forms.KeyEventHandler(this.BtnSend_Click);
             // 
             // label1
             // 

@@ -200,6 +200,23 @@ namespace ConceptsOfProgrammingLanguages
             automataView.Refresh();
         }
 
+
+
+        private void BtnRemove_Click(object sender, EventArgs e)
+        {
+            InitProject();
+        }
+
+        //
+        //Xử lý chuyển đổi
+        //
+
+        private bool _isCreateFinalState = false;
+        private bool _isCreateAllStateConnector = false;
+        private bool _isGroupConnector = false;
+        IList<ItemTableConnector> _listItemConnector = new List<ItemTableConnector>();
+
+        //chuot click
         private void BtnConvert_Click(object sender, EventArgs e)
         {
             if (!_isCreateFinalState)
@@ -214,12 +231,12 @@ namespace ConceptsOfProgrammingLanguages
             {
                 GroupStateConnector();
             }
+            else
+            {
+                HandlerConnectorLoopStates();
+            }
         }
-
-        private bool _isCreateFinalState = false;
-        private bool _isCreateAllStateConnector = false;
-        private bool _isGroupConnector = false;
-
+        //Xác định trạng thái cuối cùng hay không, đây là bước 1
         private void DetectFinalState()
         {
             IList<State> listFinalState = new List<State>();
@@ -248,6 +265,7 @@ namespace ConceptsOfProgrammingLanguages
             btnConvert.Text = "Bước tiếp";
         }
 
+        //Nhóm trạng thái khi chuyển từ state1 -> state1
         private void GroupStateConnector()
         {
             foreach (var item in automataView.GetListConnector())
@@ -258,12 +276,15 @@ namespace ConceptsOfProgrammingLanguages
                 }
             }
             _isGroupConnector = true;
+
+            CreateDataTable(_listItemConnector);
             automataView.Refresh();
         }
 
+        //Tạo tất cả các đường nối giữa các trạng thái
         private void CreateTransitionAllState()
         {
-            IList<ItemTableConnector> listItemConnector = new List<ItemTableConnector>();
+
             var listStateConnector = automataView.GetListConnector();
 
             foreach (var item1 in _State_arr)
@@ -282,15 +303,14 @@ namespace ConceptsOfProgrammingLanguages
                     }
                     if (tmp != null)
                     {
-                        value = tmp.Label.Text;
+                        value = tmp.Label.Text.Replace(" ", FaToReConverter.LAMBDA).Replace(",", FaToReConverter.OR);
                     }
                     else
                     {
                         value = Extention.VALUE_NULL.ToString();
                         item1.AddTransition(Extention.VALUE_NULL, item2);
                     }
-
-                    listItemConnector.Add(new ItemTableConnector()
+                    _listItemConnector.Add(new ItemTableConnector()
                     {
                         SourceState = item1,
                         DestinationState = item2,
@@ -301,12 +321,11 @@ namespace ConceptsOfProgrammingLanguages
 
             _isCreateAllStateConnector = true;
 
-            CreateDataTable(listItemConnector);
-
             automataView.BuildAutomata();
             automataView.Refresh();
         }
 
+        //Tạo bảng giá trị
         private void CreateDataTable(IList<ItemTableConnector> listItemConnector)
         {
             DataTable dt = new DataTable();
@@ -323,6 +342,8 @@ namespace ConceptsOfProgrammingLanguages
             gridView.DataSource = dt;
         }
 
+
+        //Tạo duy nhất 1 trạng thái kết thúc
         private void CreateSigleFinalState(IList<State> listFinalState)
         {
             AddNewState();
@@ -338,9 +359,127 @@ namespace ConceptsOfProgrammingLanguages
             automataView.Refresh();
         }
 
-        private void BtnRemove_Click(object sender, EventArgs e)
+        //biến những đường tạo với nhau thành vòng lặp và biến những đường 2 chiều thành 1
+        private void HandlerConnectorLoopStates()
         {
-            InitProject();
+            var listConnector = automataView.GetListConnector();
+            var listRestoreConnector = new List<StateConnector>();
+            foreach (var connector in listConnector)
+            {
+                if (connector.SourceState != connector.DestinationState)
+                {
+                    bool check = true;
+                    foreach (var passed in listRestoreConnector)
+                    {
+                        if (connector.SourceState == passed.SourceState &&
+                            connector.DestinationState == passed.DestinationState &&
+                            connector.Label.Text != FaToReConverter.VALUE_NULL.ToString())
+                        {
+                            check = false;
+                            break;
+                        }
+                    }
+
+                    if (check)
+                    {
+                        StateConnector revertConnector = automataView.GetStateConnectorByState(connector.DestinationState, connector.SourceState);
+                        StateConnector loopConnector = automataView.GetStateConnectorByState(connector.SourceState, connector.SourceState);
+
+                        if (revertConnector != null && loopConnector != null)
+                        {
+                            loopConnector.Label.Text = Extention.JoinString(loopConnector.Label.Text,
+                                                        Extention.JoinString(connector.Label.Text, revertConnector.Label.Text, FaToReConverter.LAMBDA),
+                                                        FaToReConverter.OR);
+                            automataView.DeleteSelectsable(revertConnector);
+                            listRestoreConnector.Add(revertConnector);
+                        }
+                    }
+                }
+            }
+            automataView.Refresh();
+        }
+
+
+        //chuyển đổi đường đi qua chính nó ( đường lặp)
+        private void HandlerConnectorLoopOneState()
+        {
+            foreach (var item in automataView.GetListConnector())
+            {
+                if (item.SourceState == item.DestinationState
+                    && item.Label.Text != Extention.VALUE_NULL.ToString())
+                {
+                    State currenState = item.SourceState;
+                    IList<StateConnector> statesConnectionBefore = new List<StateConnector>();
+                    IList<StateConnector> statesConnectionAfter = new List<StateConnector>();
+                    foreach (var st in automataView.GetListConnector())
+                    {
+                        if (st.DestinationState != st.SourceState && st.DestinationState == currenState)
+                        {
+                            statesConnectionBefore.Add(st);
+                        }
+                        else if (st.DestinationState != st.SourceState && st.SourceState == currenState)
+                        {
+                            statesConnectionAfter.Add(st);
+                        }
+                    }
+
+                    if (statesConnectionBefore != null)
+                    {
+                        foreach (var st in statesConnectionBefore)
+                            st.Label.Text = (st.Label.Text == FaToReConverter.VALUE_NULL.ToString() ? FaToReConverter.LAMBDA : st.Label.Text) + ((item.Label.Text.Length > 1) ? FaToReConverter.LEFT_PAREN : FaToReConverter.LAMBDA)
+                                    + item.Label.Text + ((item.Label.Text.Length > 1) ? FaToReConverter.RIGHT_PAREN : FaToReConverter.LAMBDA)
+                                    + FaToReConverter.KLEENE_STAR;
+                    }
+                    else
+                    {
+                        foreach (var st in statesConnectionAfter)
+                            st.Label.Text = ((item.Label.Text.Length > 1) ? FaToReConverter.LEFT_PAREN : FaToReConverter.LAMBDA)
+                                                       + item.Label.Text + ((item.Label.Text.Length > 1) ? FaToReConverter.RIGHT_PAREN : FaToReConverter.LAMBDA)
+                                                       + FaToReConverter.KLEENE_STAR
+                                                       + ((st.Label.Text == FaToReConverter.VALUE_NULL.ToString() ? FaToReConverter.LAMBDA : (st.Label.Text.Length > 1 ? FaToReConverter.LEFT_PAREN : FaToReConverter.LAMBDA)
+                                                       + st.Label.Text + ((st.Label.Text.Length > 1) ? FaToReConverter.RIGHT_PAREN : FaToReConverter.LAMBDA)));
+                    }
+                    automataView.DeleteSelectsable(item);
+                }
+                else if (item.SourceState == item.DestinationState
+                    && item.Label.Text == Extention.VALUE_NULL.ToString())
+                {
+                    automataView.DeleteSelectsable(item);
+                }
+            }
+            automataView.Refresh();
+        }
+
+        //Loại bỏ state trung gian
+        private void RemoveStateIntermediate()
+        {
+            foreach (var item in _State_arr)
+            {
+                if (!automataView.IsFinalState(item) && !automataView.IsStartState(item))
+                {
+                    IList<StateConnector> connectorsBefore = automataView.GetListStateConnectorBySigleState(item, false);
+                    IList<StateConnector> connectorsAfter = automataView.GetListStateConnectorBySigleState(item, true);
+
+                    foreach (var i1 in connectorsBefore)
+                    {
+                        foreach (var i2 in connectorsAfter)
+                        {
+                            i1.SourceState.AddTransition(i1.Label.Text + FaToReConverter.OR + i2.Label.Text, i2.DestinationState);
+                        }
+                    }
+                    foreach (var i in connectorsBefore)
+                    {
+                        automataView.DeleteSelectsable(i);
+                    }
+                    foreach (var i in connectorsAfter)
+                    {
+                        automataView.DeleteSelectsable(i);
+                    }
+                    automataView.DeleteSelectsable(item);
+                }
+            }
+            automataView.BuildAutomata();
+            automataView.Refresh();
         }
     }
 }

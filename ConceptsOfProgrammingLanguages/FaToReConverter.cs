@@ -15,17 +15,12 @@ namespace ConceptsOfProgrammingLanguages
         public static String OR = "+";
         public static String RIGHT_PAREN = ")";
         public static String LEFT_PAREN = "(";
+        public static char VALUE_E = 'ε';
+        public static char VALUE_NULL = 'Ø';
 
         public static StateConnector GrossConnector(StateConnector stateConnector)
         {
-            string label = stateConnector.Label.Text.Replace(" ", LAMBDA);
-            string[] characters = label.Split(',');
-            label = "";
-            label += characters[0];
-            for (int i = 1; i < characters.Length; i++)
-            {
-                label += "+" + characters[i];
-            }
+            string label = stateConnector.Label.Text.Replace(" ", LAMBDA).Replace(",", OR);
             stateConnector.Label.Text = label;
             return stateConnector;
         }

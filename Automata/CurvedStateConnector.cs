@@ -205,7 +205,7 @@ namespace Automata
         public override bool HandleMouseEvent(object sender, List<BaseMouseHandler> sourceChain, System.Windows.Forms.MouseEventArgs e)
         {
             var enumerator = sourceChain.GetEnumerator();
-            double current;
+            //double current;
             /*nbnguyen (23/11/2013): đoạn code dưới bị thay đổi
              * không phải nhãn bị dịch chuyển mà là đường cong bị dịch chuyển
              * Do code cập nhật điểm đk được chuyển vào phần CalcBezierPoint
