@@ -46,7 +46,7 @@ namespace ConceptsOfProgrammingLanguages
             }
             else
             {
-                Result = Extention.VALUE_E;
+                Result = FaToReConverter.VALUE_E;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }

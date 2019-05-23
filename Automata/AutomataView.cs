@@ -901,13 +901,24 @@ namespace Automata
 
         public void DeleteSelectsable(Selectable selectable)
         {
+
+
             if (selectable is State)
             {
                 var state = (State)selectable;
-
+                foreach (var con in _selectables)
+                {
+                    if (con is StateConnector)
+                    {
+                        StateConnector s = (StateConnector)con;
+                        _selectables = _selectables.Where(t => t is StateConnector && (((StateConnector)t).SourceState.Label != s.SourceState.Label ||
+                                           ((StateConnector)t).DestinationState.Label != s.DestinationState.Label)).ToArray();
+                    }
+                }
                 _drawnStateList.Remove(state);
-
+                Invalidate();
                 BuildAutomata();
+                Refresh();
             }
             else if (selectable is StateConnector)
             {
@@ -996,6 +1007,22 @@ namespace Automata
         public IList<State> GetListFinalState()
         {
             return _finalStates;
+        }
+
+        public State GetStateByLabel(string label)
+        {
+            foreach (var item in _selectables)
+            {
+                if (item is State)
+                {
+                    var state = (State)item;
+                    if (state.Label == label)
+                    {
+                        return state;
+                    }
+                }
+            }
+            return null;
         }
     }
 }

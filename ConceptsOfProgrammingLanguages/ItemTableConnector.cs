@@ -9,8 +9,8 @@ namespace ConceptsOfProgrammingLanguages
 {
     public class ItemTableConnector
     {
-        public State SourceState { get; set; }
-        public State DestinationState { get; set; }
+        public string SourceState { get; set; }
+        public string DestinationState { get; set; }
         public string Value { get; set; }
     }
 }
