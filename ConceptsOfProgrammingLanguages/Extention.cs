@@ -82,5 +82,27 @@ namespace ConceptsOfProgrammingLanguages
             }
             return result;
         }
+
+        public static string GroupString(string str)
+        {
+            string result = "";
+            if (str != FaToReConverter.VALUE_NULL.ToString())
+            {
+                if (str.Length > 1)
+                {
+                    result = FaToReConverter.LEFT_PAREN + str + FaToReConverter.RIGHT_PAREN;
+                }
+                else
+                {
+                    result = str;
+                }
+                result += FaToReConverter.KLEENE_STAR;
+            }
+            else
+            {
+                result = FaToReConverter.VALUE_NULL.ToString();
+            }
+            return result;
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace ConceptsOfProgrammingLanguages
     {
         private IList<State> _State_arr = new List<State>();
         Selectable _selectable;
-        private int _lastIndexOfState = 0;
+        private int _lastIndexOfState = 1;
         private State _sourceState = null;
         private State _destinationState = null;
         public Form1()
@@ -35,14 +35,14 @@ namespace ConceptsOfProgrammingLanguages
                 automataView.DeleteSelectsable(item);
             }
             _State_arr.Clear();
-            _lastIndexOfState = 0;
+            _lastIndexOfState = 1;
 
             automataView.BuildAutomata();
             automataView.Refresh();
-            _isCreateFinalState = false;
-            _isCreateAllStateConnector = false;
-            _isGroupConnector = false;
+            _handlerStep = 0;
             btnConvert.Text = "Chuyển đổi";
+            btnAddState.Visible = true;
+            btnAddArrow.Visible = true;
             gridView.DataSource = new DataTable();
         }
 
@@ -73,12 +73,24 @@ namespace ConceptsOfProgrammingLanguages
                 if (_selectable is StateConnector)
                 {
                     itemFinalState.Enabled = false;
+                    itemStartState.Enabled = false;
                     selectableContextMenu.Show(automataView, e.Location);
                 }
                 else if (_selectable is State)
                 {
                     itemCurve.Checked = _selectable is State;
                     itemFinalState.Enabled = true;
+                    itemStartState.Enabled = true;
+
+                    if (automataView.IsStartState((State)_selectable))
+                    {
+                        itemStartState.Checked = true;
+                    }
+                    else
+                    {
+                        itemStartState.Checked = false;
+                    }
+
                     if (automataView.IsFinalState((State)_selectable))
                     {
                         itemFinalState.Checked = true;
@@ -98,8 +110,15 @@ namespace ConceptsOfProgrammingLanguages
             int selItemIndex = selectableContextMenu.Items.IndexOf(e.ClickedItem);
             switch (selItemIndex)
             {
-                //xác định trạng thái kết thúc của state
                 case 0:
+                    if (_selectable != null && _selectable is State)
+                    {
+                        State currentState = (State)_selectable;
+                        automataView.SetStartState(currentState);
+                    }
+                    automataView.Invalidate();
+                    break;
+                case 1:
                     if (_selectable != null && _selectable is State)
                     {
                         var state = (State)_selectable;
@@ -108,7 +127,7 @@ namespace ConceptsOfProgrammingLanguages
                     automataView.Invalidate();
                     break;
                 //xóa selectable
-                case 1:
+                case 2:
                     if (_selectable != null && ((_selectable is State) || (_selectable is StateConnector)))
                     {
                         automataView.DeleteSelectsable(_selectable);
@@ -211,33 +230,12 @@ namespace ConceptsOfProgrammingLanguages
         //Xử lý chuyển đổi
         //
 
-        private bool _isCreateFinalState = false;
-        private bool _isCreateAllStateConnector = false;
-        private bool _isGroupConnector = false;
+        private int _handlerStep = 0;
+
         IList<ItemTableConnector> _listItemConnector = new List<ItemTableConnector>();
 
         //chuot click
         private void BtnConvert_Click(object sender, EventArgs e)
-        {
-            if (!_isCreateFinalState)
-            {
-                DetectFinalState();
-            }
-            else if (_isCreateFinalState && !_isCreateAllStateConnector)
-            {
-                CreateTransitionAllState();
-            }
-            else if (_isCreateAllStateConnector && _isCreateFinalState && !_isGroupConnector)
-            {
-                GroupStateConnector();
-            }
-            else
-            {
-                HandlerConnectorLoopStates();
-            }
-        }
-        //Xác định trạng thái cuối cùng hay không, đây là bước 1
-        private void DetectFinalState()
         {
             IList<State> listFinalState = new List<State>();
             foreach (var item in _State_arr)
@@ -252,17 +250,135 @@ namespace ConceptsOfProgrammingLanguages
                 MessageBox.Show("Lỗi: Không có trạng thái kết thúc");
                 return;
             }
-            else if (listFinalState.Count > 1)
+            else if (automataView.GetStartState() == null)
+            {
+                MessageBox.Show("Lỗi: Không có trạng thái bắt đầu");
+                return;
+            }
+
+            switch (_handlerStep)
+            {
+                case 0:
+                    HandlerStartState();
+                    btnConvert.Text = "Bước tiếp";
+                    btnAddState.Visible = false;
+                    btnAddArrow.Visible = false;
+                    break;
+                case 1:
+                    DetectFinalState();
+                    break;
+                case 2:
+                    HandlerFinalState();
+                    break;
+                case 3:
+                    CreateTransitionAllState();
+                    break;
+                case 4:
+                    GroupStateConnector();
+                    break;
+                case 5:
+                    HandlerConnectorLoopStates();
+                    break;
+                case 6:
+                    HandlerConnectorLoopOneState();
+                    break;
+            }
+            _handlerStep++;
+        }
+        //Xác định trạng thái cuối cùng hay không
+        private void DetectFinalState()
+        {
+            IList<State> listFinalState = new List<State>();
+            foreach (var item in _State_arr)
+            {
+                if (automataView.IsFinalState(item))
+                {
+                    listFinalState.Add(item);
+                }
+            }
+            if (listFinalState.Count > 1)
             {
                 CreateSigleFinalState(listFinalState);
-                _isCreateFinalState = true;
             }
             else if (listFinalState.Count == 1)
             {
-                _isCreateFinalState = true;
-                CreateTransitionAllState();
+                MessageBox.Show("Automata không có nhiều hơn 1 trạng thái kết thúc");
             }
-            btnConvert.Text = "Bước tiếp";
+        }
+
+
+        //thay đổi trạng thái cuối cùng nếu có connector quay ngược lại start state
+        private void HandlerStartState()
+        {
+            var startState = automataView.GetStartState();
+            var connectors = automataView.GetListStateConnectorBySigleState(startState, false);
+            bool check = true;
+            if (connectors.Count > 0)
+            {
+                foreach (var item in connectors)
+                {
+                    if (item.DestinationState != item.SourceState)
+                    {
+                        check = false;
+                        break;
+                    }
+                }
+            }
+            if (!check)
+            {
+                var state = new State("q0");
+                _State_arr.Add(state);
+                automataView.States.Add(state);
+                automataView.SetStartState(state);
+                state.AddTransition(FaToReConverter.VALUE_E, startState);
+                automataView.BuildAutomata();
+                automataView.Refresh();
+            }
+            else
+            {
+                MessageBox.Show("Không có đường nối nào quay lại trạng thái kết thúc");
+            }
+        }
+
+        //thay đổi trạng thái cuối cùng nếu có connector đi từ state cuối đến state khác
+        private void HandlerFinalState()
+        {
+            var listFinalState = automataView.GetListFinalState();
+            if (listFinalState.Count == 1)
+            {
+                var state = listFinalState.ElementAt(0);
+
+                var connectors = automataView.GetListStateConnectorBySigleState(state, true);
+                bool check = true;
+                foreach (var item in connectors)
+                {
+                    if (item.SourceState != item.DestinationState)
+                    {
+                        check = false;
+                        break;
+                    }
+                }
+                if (!check)
+                {
+                    AddNewState();
+                    var stateFinal = _State_arr.ElementAt(_State_arr.Count - 1);
+
+                    foreach (var item in listFinalState)
+                    {
+                        automataView.SetFinalState(item, false);
+                        break;
+                    }
+                    automataView.SetFinalState(stateFinal, true);
+                    state.AddTransition(FaToReConverter.VALUE_E, stateFinal);
+
+                    automataView.BuildAutomata();
+                    automataView.Refresh();
+                }
+                else
+                {
+                    MessageBox.Show("Không có đường nối từ trạng thái kết thúc sang trạng thái khác");
+                }
+            }
         }
 
         //Nhóm trạng thái khi chuyển từ state1 -> state1
@@ -275,7 +391,6 @@ namespace ConceptsOfProgrammingLanguages
                     automataView.SetStateConnectorInList(FaToReConverter.GrossConnector(item));
                 }
             }
-            _isGroupConnector = true;
 
             CreateDataTable(_listItemConnector);
             automataView.Refresh();
@@ -319,8 +434,6 @@ namespace ConceptsOfProgrammingLanguages
                 }
             }
 
-            _isCreateAllStateConnector = true;
-
             automataView.BuildAutomata();
             automataView.Refresh();
         }
@@ -359,7 +472,7 @@ namespace ConceptsOfProgrammingLanguages
             automataView.Refresh();
         }
 
-        //biến những đường tạo với nhau thành vòng lặp và biến những đường 2 chiều thành 1
+        //biến những đường tạo với nhau thành vòng lặp và biến những đường 2 chiều thành 1: BƯỚC 1
         private void HandlerConnectorLoopStates()
         {
             var listConnector = automataView.GetListConnector();
@@ -368,39 +481,58 @@ namespace ConceptsOfProgrammingLanguages
             {
                 if (connector.SourceState != connector.DestinationState)
                 {
-                    bool check = true;
-                    foreach (var passed in listRestoreConnector)
+                    if (connector.Label.Text != FaToReConverter.VALUE_NULL.ToString())
                     {
-                        if (connector.SourceState == passed.SourceState &&
-                            connector.DestinationState == passed.DestinationState &&
-                            connector.Label.Text != FaToReConverter.VALUE_NULL.ToString())
+                        bool check = true;
+                        foreach (var passed in listRestoreConnector)
                         {
-                            check = false;
-                            break;
+                            if (connector.SourceState == passed.SourceState &&
+                                connector.DestinationState == passed.DestinationState &&
+                                connector.Label.Text != FaToReConverter.VALUE_NULL.ToString())
+                            {
+                                check = false;
+                                break;
+                            }
+                        }
+
+                        if (check)
+                        {
+                            StateConnector revertConnector = automataView.GetStateConnectorByState(connector.DestinationState, connector.SourceState);
+                            StateConnector loopConnector = automataView.GetStateConnectorByState(connector.SourceState, connector.SourceState);
+
+                            if (revertConnector != null && loopConnector != null)
+                            {
+                                loopConnector.Label.Text = Extention.JoinString(loopConnector.Label.Text,
+                                                            Extention.JoinString(connector.Label.Text, revertConnector.Label.Text, FaToReConverter.LAMBDA),
+                                                            FaToReConverter.OR);
+                                automataView.DeleteSelectsable(revertConnector);
+                                listRestoreConnector.Add(revertConnector);
+                            }
                         }
                     }
 
-                    if (check)
-                    {
-                        StateConnector revertConnector = automataView.GetStateConnectorByState(connector.DestinationState, connector.SourceState);
-                        StateConnector loopConnector = automataView.GetStateConnectorByState(connector.SourceState, connector.SourceState);
 
-                        if (revertConnector != null && loopConnector != null)
-                        {
-                            loopConnector.Label.Text = Extention.JoinString(loopConnector.Label.Text,
-                                                        Extention.JoinString(connector.Label.Text, revertConnector.Label.Text, FaToReConverter.LAMBDA),
-                                                        FaToReConverter.OR);
-                            automataView.DeleteSelectsable(revertConnector);
-                            listRestoreConnector.Add(revertConnector);
-                        }
-                    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 }
             }
             automataView.Refresh();
         }
 
 
-        //chuyển đổi đường đi qua chính nó ( đường lặp)
+        //chuyển đổi đường đi qua chính nó ( đường lặp), BƯỚC 2
         private void HandlerConnectorLoopOneState()
         {
             foreach (var item in automataView.GetListConnector())
@@ -423,21 +555,19 @@ namespace ConceptsOfProgrammingLanguages
                         }
                     }
 
-                    if (statesConnectionBefore != null)
+                    if (statesConnectionBefore.Count > 0)
                     {
                         foreach (var st in statesConnectionBefore)
-                            st.Label.Text = (st.Label.Text == FaToReConverter.VALUE_NULL.ToString() ? FaToReConverter.LAMBDA : st.Label.Text) + ((item.Label.Text.Length > 1) ? FaToReConverter.LEFT_PAREN : FaToReConverter.LAMBDA)
-                                    + item.Label.Text + ((item.Label.Text.Length > 1) ? FaToReConverter.RIGHT_PAREN : FaToReConverter.LAMBDA)
-                                    + FaToReConverter.KLEENE_STAR;
+                        {
+                            st.Label.Text = Extention.JoinString(st.Label.Text, Extention.GroupString(item.Label.Text), FaToReConverter.LAMBDA);
+                        }
                     }
-                    else
+                    else if (statesConnectionAfter.Count > 0)
                     {
                         foreach (var st in statesConnectionAfter)
-                            st.Label.Text = ((item.Label.Text.Length > 1) ? FaToReConverter.LEFT_PAREN : FaToReConverter.LAMBDA)
-                                                       + item.Label.Text + ((item.Label.Text.Length > 1) ? FaToReConverter.RIGHT_PAREN : FaToReConverter.LAMBDA)
-                                                       + FaToReConverter.KLEENE_STAR
-                                                       + ((st.Label.Text == FaToReConverter.VALUE_NULL.ToString() ? FaToReConverter.LAMBDA : (st.Label.Text.Length > 1 ? FaToReConverter.LEFT_PAREN : FaToReConverter.LAMBDA)
-                                                       + st.Label.Text + ((st.Label.Text.Length > 1) ? FaToReConverter.RIGHT_PAREN : FaToReConverter.LAMBDA)));
+                        {
+                            st.Label.Text = Extention.JoinString(Extention.GroupString(item.Label.Text), st.Label.Text, FaToReConverter.LAMBDA);
+                        }
                     }
                     automataView.DeleteSelectsable(item);
                 }
@@ -450,7 +580,7 @@ namespace ConceptsOfProgrammingLanguages
             automataView.Refresh();
         }
 
-        //Loại bỏ state trung gian
+        //Loại bỏ state trung gian, BƯỚC 3
         private void RemoveStateIntermediate()
         {
             foreach (var item in _State_arr)

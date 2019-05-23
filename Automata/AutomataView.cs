@@ -344,11 +344,13 @@ namespace Automata
                     {
                         s.IsStartState = false;
                         state.IsStartState = true;
+                        _startState = state;
                         return;
                     }
                 }
             }
             state.IsStartState = true;
+            _startState = state;
         }
 
         public List<State> States
@@ -384,9 +386,15 @@ namespace Automata
             //pre calculate States's position
             foreach (State state in _drawnStateList)
             {
+                if (state != _startState && state.IsStartState)
+                {
+                    state.IsStartState = false;
+                }
+                if (state == _startState)
+                {
+                    state.IsStartState = true;
+                }
                 selectableList.Add(state);
-                if (state.Label == "q0")
-                    _startState = state;
                 state.X = (int)(r * Math.Cos(a)) + ptCenter.X;
                 state.Y = (int)(r * Math.Sin(a)) + ptCenter.Y;
                 a += _angleStep;
@@ -980,8 +988,14 @@ namespace Automata
             return list;
         }
 
-        public void AddConnector(State source,State destination, string text)
+        public State GetStartState()
         {
+            return _startState;
+        }
+
+        public IList<State> GetListFinalState()
+        {
+            return _finalStates;
         }
     }
 }

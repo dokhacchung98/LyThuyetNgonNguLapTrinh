@@ -32,6 +32,7 @@
             this.btnAddState = new System.Windows.Forms.Button();
             this.itemCurve = new System.Windows.Forms.ToolStripMenuItem();
             this.itemFinalState = new System.Windows.Forms.ToolStripMenuItem();
+            this.itemStartState = new System.Windows.Forms.ToolStripMenuItem();
             this.itemRemoveSelector = new System.Windows.Forms.ToolStripMenuItem();
             this.selectableContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnAddArrow = new System.Windows.Forms.Button();
@@ -69,6 +70,13 @@
             this.itemFinalState.Size = new System.Drawing.Size(173, 22);
             this.itemFinalState.Text = "Trạng thái kết thúc";
             // 
+            // itemStartState
+            // 
+            this.itemStartState.CheckOnClick = true;
+            this.itemStartState.Name = "itemStartState";
+            this.itemStartState.Size = new System.Drawing.Size(173, 22);
+            this.itemStartState.Text = "Trạng thái bắt đầu";
+            // 
             // itemRemoveSelector
             // 
             this.itemRemoveSelector.CheckOnClick = true;
@@ -79,6 +87,7 @@
             // selectableContextMenu
             // 
             this.selectableContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemStartState,
             this.itemFinalState,
             this.itemRemoveSelector});
             this.selectableContextMenu.Name = "connectorContextMenu";
@@ -175,6 +184,7 @@
         private System.Windows.Forms.Button btnAddState;
         private System.Windows.Forms.ToolStripMenuItem itemCurve;
         private System.Windows.Forms.ToolStripMenuItem itemFinalState;
+        private System.Windows.Forms.ToolStripMenuItem itemStartState;
         private System.Windows.Forms.ToolStripMenuItem itemRemoveSelector;
         private System.Windows.Forms.ContextMenuStrip selectableContextMenu;
         private System.Windows.Forms.Button btnAddArrow;
