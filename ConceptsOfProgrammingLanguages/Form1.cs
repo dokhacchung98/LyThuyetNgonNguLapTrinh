@@ -20,8 +20,7 @@ namespace ConceptsOfProgrammingLanguages
         private State _destinationState = null;
         public Form1()
         {
-            Application.Restart();
-            Environment.Exit(0);
+            InitializeComponent();
         }
 
         private void BtnAddState_Click(object sender, EventArgs e)
@@ -208,7 +207,8 @@ namespace ConceptsOfProgrammingLanguages
 
         private void BtnRemove_Click(object sender, EventArgs e)
         {
-            InitProject();
+            Application.Restart();
+            Environment.Exit(0);
         }
 
         //
