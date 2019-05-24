@@ -283,9 +283,17 @@ namespace ConceptsOfProgrammingLanguages
 
         private void ShowResultConvertSuccess()
         {
-            ResultReAfterConvert = Extention.getExpressionFromGTG(_listItemConnector, _nameStartState, _nameFinalState);
+            string result = Extention.getExpressionFromGTG(_listItemConnector, _nameStartState, _nameFinalState);
+            ResultReAfterConvert = FormatResult(result);
             ShowResult showResult = new ShowResult();
             showResult.Show();
+        }
+        
+        private string FormatResult(string result)
+        {
+            result = result.Replace(FaToReConverter.VALUE_E.ToString(), string.Empty);
+
+            return result;
         }
 
         //Xác định trạng thái cuối cùng hay không
