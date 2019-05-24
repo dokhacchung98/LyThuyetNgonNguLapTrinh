@@ -20,7 +20,8 @@ namespace ConceptsOfProgrammingLanguages
         private State _destinationState = null;
         public Form1()
         {
-            InitializeComponent();
+            Application.Restart();
+            Environment.Exit(0);
         }
 
         private void BtnAddState_Click(object sender, EventArgs e)
@@ -28,24 +29,6 @@ namespace ConceptsOfProgrammingLanguages
             AddNewState();
         }
 
-        private void InitProject()
-        {
-            foreach (var item in _State_arr)
-            {
-                automataView.DeleteSelectsable(item);
-            }
-            _State_arr.Clear();
-            _lastIndexOfState = 1;
-
-            automataView.BuildAutomata();
-            automataView.Refresh();
-            _handlerStep = 0;
-            btnConvert.Text = "Chuyển đổi";
-            btnAddState.Visible = true;
-            btnAddArrow.Visible = true;
-            gridView.DataSource = new DataTable();
-            _listItemConnector.Clear();
-        }
 
         private void AddNewState()
         {
@@ -528,30 +511,24 @@ namespace ConceptsOfProgrammingLanguages
             automataView.States.Add(finalState);
             automataView.SetStartState(startState);
             automataView.SetFinalState(finalState);
-            foreach (var item in _listItemConnector)
+            
+            foreach(var connector in _listItemConnector)
             {
-                State source = null;
-                State des = null;
-                if (item.SourceState == startState.Label)
+                if (connector.SourceState.Equals(_nameStartState) && connector.DestinationState.Equals(_nameFinalState))
                 {
-                    source = startState;
-                }
-                if (item.SourceState == finalState.Label)
+                    startState.AddTransition(connector.Value.ToCharArray(), finalState);
+                } else if (connector.SourceState.Equals(_nameStartState) && connector.DestinationState.Equals(_nameStartState))
                 {
-                    source = finalState;
-                }
-                if (item.DestinationState == startState.Label)
+                    startState.AddTransition(connector.Value.ToCharArray(), startState);
+                } else if (connector.SourceState.Equals(_nameFinalState) && connector.DestinationState.Equals(_nameFinalState))
                 {
-                    des = startState;
-                }
-                if (item.DestinationState == finalState.Label)
+                    finalState.AddTransition(connector.Value.ToCharArray(), finalState);
+                } else if (connector.SourceState.Equals(_nameFinalState) && connector.DestinationState.Equals(_nameStartState))
                 {
-                    des = finalState;
+                    finalState.AddTransition(connector.Value.ToCharArray(), startState);
                 }
-
-                source.AddTransition(item.Value, des);
-                automataView.BuildAutomata();
             }
+            automataView.BuildAutomata();
             automataView.Invalidate();
             automataView.Refresh();
         }

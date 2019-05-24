@@ -41,7 +41,17 @@ namespace Automata
                     {
                         if (_StringBuilder.ToString().Length > 0)
                             _StringBuilder.Append(", ");
-                        _StringBuilder.Append((char)de.Key);
+                        if (de.Key.GetType().IsArray)
+                        {
+                            foreach(var temp in (char[]) de.Key)
+                            {
+                                _StringBuilder.Append((char)temp);
+                            }
+                        }
+                        else
+                        {
+                            _StringBuilder.Append((char)de.Key);
+                        }
                         break;
                     }
                 }

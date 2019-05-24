@@ -890,7 +890,7 @@ namespace Automata
         public event ItemSelectedHandler ItemSelected;
         public event DemoFinishedHandler DemoFinished;
 
-        private void InitializeComponent()
+        public void InitializeComponent()
         {
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             this.SuspendLayout();

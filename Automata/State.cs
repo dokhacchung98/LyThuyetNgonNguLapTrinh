@@ -109,14 +109,13 @@ namespace Automata
 
         }
 
-        public void AddTransition(string transitChars, State sTo)
+        public void AddTransition(char[] transitChars, State sTo)
         {
-            Transition newTransition = new Transition
-            {
-                TransitChars = transitChars,
-                DestinedState = sTo
-            };
-            _transitionList.Add(newTransition);
+            List<State> newList = new List<State>();
+            _transitionHash.Add(transitChars, newList);
+
+            var list = _transitionHash[transitChars] as List<State>;
+            list.Add(sTo);
         }
 
         private string _Label;
