@@ -1024,5 +1024,17 @@ namespace Automata
             }
             return null;
         }
+
+        public void SetAllSelectable(Selectable[] selects)
+        {
+            _selectables = selects;
+            BuildAutomata();
+            Refresh();
+        }
+
+        public Selectable[] GetAllSelectable()
+        {
+            return _selectables;
+        }
     }
 }

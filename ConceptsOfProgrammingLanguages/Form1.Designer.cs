@@ -40,10 +40,11 @@
             this.txtParametor = new System.Windows.Forms.TextBox();
             this.btnConvert = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
-            this.gridView = new System.Windows.Forms.DataGridView();
+            this.btnRemoveState = new System.Windows.Forms.Button();
+            this.automataViewResult = new Automata.AutomataView();
             this.selectableContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.automataViewResult)).BeginInit();
             this.SuspendLayout();
             // 
             // btnAddState
@@ -91,7 +92,7 @@
             this.itemFinalState,
             this.itemRemoveSelector});
             this.selectableContextMenu.Name = "connectorContextMenu";
-            this.selectableContextMenu.Size = new System.Drawing.Size(174, 48);
+            this.selectableContextMenu.Size = new System.Drawing.Size(174, 70);
             this.selectableContextMenu.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.connectorContextMenu_ItemClicked);
             // 
             // btnAddArrow
@@ -147,20 +148,35 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.BtnRemove_Click);
             // 
-            // gridView
+            // btnRemoveState
             // 
-            this.gridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridView.Location = new System.Drawing.Point(665, 1);
-            this.gridView.Name = "gridView";
-            this.gridView.Size = new System.Drawing.Size(337, 658);
-            this.gridView.TabIndex = 5;
+            this.btnRemoveState.Location = new System.Drawing.Point(955, 667);
+            this.btnRemoveState.Name = "btnRemoveState";
+            this.btnRemoveState.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.btnRemoveState.Size = new System.Drawing.Size(116, 43);
+            this.btnRemoveState.TabIndex = 6;
+            this.btnRemoveState.Text = "Xóa trạng thái";
+            this.btnRemoveState.UseVisualStyleBackColor = true;
+            // 
+            // automataViewResult
+            // 
+            this.automataViewResult.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.automataViewResult.endPoint = new System.Drawing.Point(0, 0);
+            this.automataViewResult.isEnableMouseHere = true;
+            this.automataViewResult.Location = new System.Drawing.Point(680, 1);
+            this.automataViewResult.Name = "automataViewResult";
+            this.automataViewResult.Size = new System.Drawing.Size(658, 658);
+            this.automataViewResult.startPoint = new System.Drawing.Point(0, 0);
+            this.automataViewResult.TabIndex = 7;
+            this.automataViewResult.TabStop = false;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1003, 722);
-            this.Controls.Add(this.gridView);
+            this.ClientSize = new System.Drawing.Size(1340, 722);
+            this.Controls.Add(this.automataViewResult);
+            this.Controls.Add(this.btnRemoveState);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnConvert);
             this.Controls.Add(this.btnAddArrow);
@@ -173,7 +189,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.selectableContextMenu.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.automataView)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gridView)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.automataViewResult)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -191,7 +207,8 @@
         private System.Windows.Forms.TextBox txtParametor;
         private System.Windows.Forms.Button btnConvert;
         private System.Windows.Forms.Button btnRemove;
-        private System.Windows.Forms.DataGridView gridView;
+        private System.Windows.Forms.Button btnRemoveState;
+        private Automata.AutomataView automataViewResult;
     }
 }
 

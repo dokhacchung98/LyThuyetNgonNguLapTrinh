@@ -248,6 +248,7 @@ namespace ConceptsOfProgrammingLanguages
             switch (_handlerStep)
             {
                 case 0:
+                    HandleImage();
                     HandlerStartState();
                     btnConvert.Text = "Bước tiếp";
                     btnAddState.Visible = false;
@@ -261,15 +262,13 @@ namespace ConceptsOfProgrammingLanguages
                     break;
                 case 3:
                     CreateTransitionAllState();
-                    break;
-                case 4:
                     GroupStateConnector();
                     break;
-                case 5:
+                case 4:
                     EliminationState();
                     btnConvert.Text = "Hiển thị kết quả";
                     break;
-                case 6:
+                case 5:
                     ShowResultConvertSuccess();
                     break;
             }
@@ -279,6 +278,53 @@ namespace ConceptsOfProgrammingLanguages
                 _handlerStep = 6;
             }
         }
+
+        private void HandleImage()
+        {
+            foreach (var item in _State_arr)
+            {
+                automataViewResult.States.Add(item);
+            }
+
+            automataViewResult.BuildAutomata();
+            var listConnector = automataView.GetListConnector();
+            var listfinalState = automataView.GetListFinalState();
+            var startState = automataView.GetStartState();
+            if (startState != null)
+            {
+                State s = automataViewResult.GetStateByLabel(startState.Label);
+                if (s != null)
+                    automataViewResult.SetStartState(s);
+            }
+
+            foreach (var item in listfinalState)
+            {
+                State t = automataViewResult.GetStateByLabel(item.Label);
+                if (t != null)
+                {
+                    automataViewResult.SetFinalState(t);
+                }
+            }
+
+            foreach (var connector in listConnector)
+            {
+                var ss = automataViewResult.GetStateByLabel(connector.SourceState.Label);
+                var ds = automataViewResult.GetStateByLabel(connector.DestinationState.Label);
+                if (ss != null && ds != null)
+                {
+                    ss.AddTransition(connector.Label.Text.ToCharArray(), ds);
+                }
+            }
+            automataViewResult.BuildAutomata();
+            automataViewResult.Refresh();
+
+            var locationTmp = automataView.Location;
+            automataView.Location = automataViewResult.Location;
+            automataViewResult.Location = locationTmp;
+
+            Refresh();
+        }
+
         public static string ResultReAfterConvert = "";
 
         private void ShowResultConvertSuccess()
@@ -288,7 +334,7 @@ namespace ConceptsOfProgrammingLanguages
             ShowResult showResult = new ShowResult();
             showResult.Show();
         }
-        
+
         private string FormatResult(string result)
         {
             result = result.Replace(FaToReConverter.VALUE_E.ToString(), string.Empty);
@@ -463,8 +509,6 @@ namespace ConceptsOfProgrammingLanguages
             {
                 dt.Rows.Add(item.SourceState, item.DestinationState, item.Value);
             }
-
-            gridView.DataSource = dt;
         }
 
         //Tạo duy nhất 1 trạng thái kết thúc
@@ -519,19 +563,22 @@ namespace ConceptsOfProgrammingLanguages
             automataView.States.Add(finalState);
             automataView.SetStartState(startState);
             automataView.SetFinalState(finalState);
-            
-            foreach(var connector in _listItemConnector)
+
+            foreach (var connector in _listItemConnector)
             {
                 if (connector.SourceState.Equals(_nameStartState) && connector.DestinationState.Equals(_nameFinalState))
                 {
                     startState.AddTransition(connector.Value.ToCharArray(), finalState);
-                } else if (connector.SourceState.Equals(_nameStartState) && connector.DestinationState.Equals(_nameStartState))
+                }
+                else if (connector.SourceState.Equals(_nameStartState) && connector.DestinationState.Equals(_nameStartState))
                 {
                     startState.AddTransition(connector.Value.ToCharArray(), startState);
-                } else if (connector.SourceState.Equals(_nameFinalState) && connector.DestinationState.Equals(_nameFinalState))
+                }
+                else if (connector.SourceState.Equals(_nameFinalState) && connector.DestinationState.Equals(_nameFinalState))
                 {
                     finalState.AddTransition(connector.Value.ToCharArray(), finalState);
-                } else if (connector.SourceState.Equals(_nameFinalState) && connector.DestinationState.Equals(_nameStartState))
+                }
+                else if (connector.SourceState.Equals(_nameFinalState) && connector.DestinationState.Equals(_nameStartState))
                 {
                     finalState.AddTransition(connector.Value.ToCharArray(), startState);
                 }
