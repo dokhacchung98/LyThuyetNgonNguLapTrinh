@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnAddState = new System.Windows.Forms.Button();
             this.itemCurve = new System.Windows.Forms.ToolStripMenuItem();
             this.itemFinalState = new System.Windows.Forms.ToolStripMenuItem();
@@ -40,8 +41,9 @@
             this.txtParametor = new System.Windows.Forms.TextBox();
             this.btnConvert = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
-            this.btnRemoveState = new System.Windows.Forms.Button();
             this.automataViewResult = new Automata.AutomataView();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
+            this.btnShowResult = new System.Windows.Forms.Button();
             this.selectableContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.automataViewResult)).BeginInit();
@@ -148,16 +150,6 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.BtnRemove_Click);
             // 
-            // btnRemoveState
-            // 
-            this.btnRemoveState.Location = new System.Drawing.Point(955, 667);
-            this.btnRemoveState.Name = "btnRemoveState";
-            this.btnRemoveState.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.btnRemoveState.Size = new System.Drawing.Size(116, 43);
-            this.btnRemoveState.TabIndex = 6;
-            this.btnRemoveState.Text = "Xóa trạng thái";
-            this.btnRemoveState.UseVisualStyleBackColor = true;
-            // 
             // automataViewResult
             // 
             this.automataViewResult.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -170,13 +162,30 @@
             this.automataViewResult.TabIndex = 7;
             this.automataViewResult.TabStop = false;
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Untitled.png");
+            // 
+            // btnShowResult
+            // 
+            this.btnShowResult.Location = new System.Drawing.Point(958, 667);
+            this.btnShowResult.Name = "btnShowResult";
+            this.btnShowResult.Size = new System.Drawing.Size(116, 43);
+            this.btnShowResult.TabIndex = 8;
+            this.btnShowResult.Text = "Hiển thị kết quả";
+            this.btnShowResult.UseVisualStyleBackColor = true;
+            this.btnShowResult.Visible = false;
+            this.btnShowResult.Click += new System.EventHandler(this.BtnShowResult_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1340, 722);
+            this.Controls.Add(this.btnShowResult);
             this.Controls.Add(this.automataViewResult);
-            this.Controls.Add(this.btnRemoveState);
             this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnConvert);
             this.Controls.Add(this.btnAddArrow);
@@ -207,8 +216,9 @@
         private System.Windows.Forms.TextBox txtParametor;
         private System.Windows.Forms.Button btnConvert;
         private System.Windows.Forms.Button btnRemove;
-        private System.Windows.Forms.Button btnRemoveState;
         private Automata.AutomataView automataViewResult;
+        private System.Windows.Forms.ImageList imageList1;
+        private System.Windows.Forms.Button btnShowResult;
     }
 }
 
