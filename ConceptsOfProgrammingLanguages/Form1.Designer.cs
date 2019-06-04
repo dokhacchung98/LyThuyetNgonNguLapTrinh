@@ -37,16 +37,16 @@
             this.itemRemoveSelector = new System.Windows.Forms.ToolStripMenuItem();
             this.selectableContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.btnAddArrow = new System.Windows.Forms.Button();
-            this.automataView = new Automata.AutomataView();
             this.txtParametor = new System.Windows.Forms.TextBox();
             this.btnConvert = new System.Windows.Forms.Button();
             this.btnRemove = new System.Windows.Forms.Button();
-            this.automataViewResult = new Automata.AutomataView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.btnShowResult = new System.Windows.Forms.Button();
+            this.automataViewResult = new Automata.AutomataView();
+            this.automataView = new Automata.AutomataView();
             this.selectableContextMenu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.automataViewResult)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.automataView)).BeginInit();
             this.SuspendLayout();
             // 
             // btnAddState
@@ -107,22 +107,6 @@
             this.btnAddArrow.UseVisualStyleBackColor = true;
             this.btnAddArrow.Click += new System.EventHandler(this.BtnAddArrow_Click);
             // 
-            // automataView
-            // 
-            this.automataView.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.automataView.endPoint = new System.Drawing.Point(0, 0);
-            this.automataView.isEnableMouseHere = true;
-            this.automataView.Location = new System.Drawing.Point(0, 1);
-            this.automataView.Name = "automataView";
-            this.automataView.Size = new System.Drawing.Size(658, 658);
-            this.automataView.startPoint = new System.Drawing.Point(0, 0);
-            this.automataView.TabIndex = 0;
-            this.automataView.TabStop = false;
-            this.automataView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.automataView_MouseClick);
-            this.automataView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseDown);
-            this.automataView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseMove);
-            this.automataView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseUp);
-            // 
             // txtParametor
             // 
             this.txtParametor.Location = new System.Drawing.Point(0, 0);
@@ -150,6 +134,23 @@
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Click += new System.EventHandler(this.BtnRemove_Click);
             // 
+            // imageList1
+            // 
+            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList1.Images.SetKeyName(0, "Untitled.png");
+            // 
+            // btnShowResult
+            // 
+            this.btnShowResult.Location = new System.Drawing.Point(926, 667);
+            this.btnShowResult.Name = "btnShowResult";
+            this.btnShowResult.Size = new System.Drawing.Size(116, 43);
+            this.btnShowResult.TabIndex = 8;
+            this.btnShowResult.Text = "Hiển thị kết quả";
+            this.btnShowResult.UseVisualStyleBackColor = true;
+            this.btnShowResult.Visible = false;
+            this.btnShowResult.Click += new System.EventHandler(this.BtnShowResult_Click);
+            // 
             // automataViewResult
             // 
             this.automataViewResult.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -162,22 +163,21 @@
             this.automataViewResult.TabIndex = 7;
             this.automataViewResult.TabStop = false;
             // 
-            // imageList1
+            // automataView
             // 
-            this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
-            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
-            this.imageList1.Images.SetKeyName(0, "Untitled.png");
-            // 
-            // btnShowResult
-            // 
-            this.btnShowResult.Location = new System.Drawing.Point(958, 667);
-            this.btnShowResult.Name = "btnShowResult";
-            this.btnShowResult.Size = new System.Drawing.Size(116, 43);
-            this.btnShowResult.TabIndex = 8;
-            this.btnShowResult.Text = "Hiển thị kết quả";
-            this.btnShowResult.UseVisualStyleBackColor = true;
-            this.btnShowResult.Visible = false;
-            this.btnShowResult.Click += new System.EventHandler(this.BtnShowResult_Click);
+            this.automataView.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.automataView.endPoint = new System.Drawing.Point(0, 0);
+            this.automataView.isEnableMouseHere = true;
+            this.automataView.Location = new System.Drawing.Point(0, 1);
+            this.automataView.Name = "automataView";
+            this.automataView.Size = new System.Drawing.Size(658, 658);
+            this.automataView.startPoint = new System.Drawing.Point(0, 0);
+            this.automataView.TabIndex = 0;
+            this.automataView.TabStop = false;
+            this.automataView.MouseClick += new System.Windows.Forms.MouseEventHandler(this.automataView_MouseClick);
+            this.automataView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseDown);
+            this.automataView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseMove);
+            this.automataView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.AutomataView_MouseUp);
             // 
             // Form1
             // 
@@ -197,8 +197,8 @@
             this.Text = "Phạm Tiến Nam - Đỗ Khắc Chung : FA to RE";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.selectableContextMenu.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.automataView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.automataViewResult)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.automataView)).EndInit();
             this.ResumeLayout(false);
 
         }

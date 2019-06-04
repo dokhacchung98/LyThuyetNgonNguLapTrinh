@@ -378,6 +378,7 @@ namespace Automata
             int radius = (_drawnStateList.Count / 4 + 1) * Config.STATE_DISPLAY_SIZE * 2;
             int halfWidth = DisplayRectangle.Width / 2;
             Point ptCenter = new Point(halfWidth, DisplayRectangle.Height / 2);
+            Point tmpPoint = new Point(25, 25);
             int r = halfWidth * 2 / 3 - Config.STATE_DISPLAY_SIZE;
             r = radius < r ? radius : r;
             double a = Math.PI;
@@ -395,9 +396,10 @@ namespace Automata
                     state.IsStartState = true;
                 }
                 selectableList.Add(state);
-                state.X = (int)(r * Math.Cos(a)) + ptCenter.X;
-                state.Y = (int)(r * Math.Sin(a)) + ptCenter.Y;
-                a += _angleStep;
+                //state.X = (int)(r * Math.Cos(a)) + ptCenter.X;
+                //state.Y = (int)(r * Math.Sin(a)) + ptCenter.Y;
+                //a += _angleStep;
+                
             }
 
             foreach (State state in _drawnStateList)

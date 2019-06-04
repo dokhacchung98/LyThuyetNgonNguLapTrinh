@@ -37,6 +37,8 @@ namespace ConceptsOfProgrammingLanguages
             var state = new State("q" + _lastIndexOfState);
             _State_arr.Add(state);
             _lastIndexOfState++;
+            state.X = 50;
+            state.Y = 50;
             automataView.States.Add(state);
 
             automataView.BuildAutomata();
@@ -167,7 +169,7 @@ namespace ConceptsOfProgrammingLanguages
             automataView.isEnableMouseHere = !automataView.isEnableMouseHere;
             if (!automataView.isEnableMouseHere)
             {
-                btnAddArrow.BackColor = Color.BlueViolet;
+                btnAddArrow.BackColor = Color.CornflowerBlue;
             }
             else
             {
@@ -239,7 +241,7 @@ namespace ConceptsOfProgrammingLanguages
         private int _handlerStep = 0;
 
         private IList<ItemTableConnector> _listItemConnector = new List<ItemTableConnector>();
-        private IList<string> _listNameState = new List<string>();
+        private IList<TempState> _listNameState = new List<TempState>();
         private string _nameStartState = "";
         private string _nameFinalState = "";
 
@@ -287,15 +289,9 @@ namespace ConceptsOfProgrammingLanguages
                     CreateTransitionAllState();
                     GroupStateConnector();
                     btnConvert.Visible = false;
-                    ChangeCursorImage();
+                    VisiableBtnShowResult();
+                    HandleCursor();
                     break;
-                    //case 4:
-                    //    EliminationState();
-                    //    btnConvert.Text = "Hiển thị kết quả";
-                    //    break;
-                    //case 5:
-                    //    ShowResultConvertSuccess();
-                    //    break;
             }
             _handlerStep++;
             if (_handlerStep > 4)
@@ -477,7 +473,11 @@ namespace ConceptsOfProgrammingLanguages
 
             foreach (var item1 in _State_arr)
             {
-                _listNameState.Add(item1.Label);
+                _listNameState.Add(new TempState()
+                {
+                    NameState = item1.Label,
+                    Position = item1.Position
+                });
                 foreach (var item2 in _State_arr)
                 {
                     string value = FaToReConverter.VALUE_NULL.ToString();
@@ -494,11 +494,6 @@ namespace ConceptsOfProgrammingLanguages
                     {
                         value = tmp.Label.Text.Replace(" ", FaToReConverter.LAMBDA).Replace(",", FaToReConverter.OR);
                     }
-                    //else
-                    //{
-                    //    value = FaToReConverter.VALUE_NULL.ToString();
-                    //    item1.AddTransition(FaToReConverter.VALUE_NULL, item2);
-                    //}
                     _listItemConnector.Add(new ItemTableConnector()
                     {
                         SourceState = item1.Label,
@@ -535,7 +530,7 @@ namespace ConceptsOfProgrammingLanguages
             _nameStartState = automataView.GetStartState().Label;
             foreach (var item in _listNameState.ToList())
             {
-                if (item != _nameFinalState && item != _nameStartState)
+                if (item.NameState != _nameFinalState && item.NameState != _nameStartState)
                 {
                     GetAllConnectorForRemoveState(item);
                     RemoveState(item);
@@ -548,10 +543,12 @@ namespace ConceptsOfProgrammingLanguages
         {
             _nameFinalState = automataView.GetListFinalState()[0].Label;
             _nameStartState = automataView.GetStartState().Label;
-            if (_listNameState.Contains(nameState) && nameState != _nameFinalState && nameState != _nameStartState)
+            if (_listNameState.Any(t => t.NameState == nameState) && nameState != _nameFinalState && nameState != _nameStartState)
             {
-                GetAllConnectorForRemoveState(nameState);
-                RemoveState(nameState);
+                TempState t = _listNameState.Where(item => item.NameState == nameState).FirstOrDefault();
+
+                GetAllConnectorForRemoveState(t);
+                RemoveState(t);
             }
             RenderAutomata();
         }
@@ -610,24 +607,22 @@ namespace ConceptsOfProgrammingLanguages
 
             foreach (var item in _listNameState)
             {
-                State tmp = new State(item);
+                State tmp = new State(item.NameState);
+                tmp.X = item.Position.X;
+                tmp.Y = item.Position.Y;
                 _State_arr.Add(tmp);
                 automataView.States.Add(tmp);
-                if (item == _nameStartState)
+                if (item.NameState == _nameStartState)
                 {
                     automataView.SetStartState(tmp);
                 }
-                if (item == _nameFinalState)
+                if (item.NameState == _nameFinalState)
                 {
                     automataView.SetFinalState(tmp);
                 }
             }
 
-            if ((_listNameState.Count == 2 && _nameFinalState != _nameStartState)
-                || _listNameState.Count == 1)
-            {
-                btnShowResult.Visible = true;
-            }
+            VisiableBtnShowResult();
 
             foreach (var stt1 in _State_arr)
             {
@@ -649,13 +644,23 @@ namespace ConceptsOfProgrammingLanguages
             automataView.Refresh();
         }
 
+        //Kiểm tra nếu có còn phải là 2 trạng thái cuối ko để hiển thị kết quả
+        private void VisiableBtnShowResult()
+        {
+            if ((_listNameState.Count == 2 && _nameFinalState != _nameStartState)
+                || _listNameState.Count == 1)
+            {
+                btnShowResult.Visible = true;
+            }
+        }
+
         //Xóa state đã xét
-        private void RemoveState(string stateRemove)
+        private void RemoveState(TempState stateRemove)
         {
             _listNameState.Remove(stateRemove);
             foreach (var item in _listItemConnector.ToList())
             {
-                if (item.SourceState == stateRemove || item.DestinationState == stateRemove)
+                if (item.SourceState == stateRemove.NameState || item.DestinationState == stateRemove.NameState)
                 {
                     _listItemConnector.Remove(item);
                 }
@@ -663,9 +668,9 @@ namespace ConceptsOfProgrammingLanguages
         }
 
         //Lấy tất cả connector giữa state cần xét
-        private void GetAllConnectorForRemoveState(string state)
+        private void GetAllConnectorForRemoveState(TempState state)
         {
-            if (!IsCanRemoveState(state))
+            if (!IsCanRemoveState(state.NameState))
                 return;
             foreach (var stateFrom in _listNameState.ToList())
             {
@@ -675,8 +680,8 @@ namespace ConceptsOfProgrammingLanguages
                     {
                         if (stateTo != state)
                         {
-                            string exp = getExpression(stateFrom, stateTo, state);
-                            ChangeLabel2StateFromAndTo(stateFrom, stateTo, exp);
+                            string exp = getExpression(stateFrom.NameState, stateTo.NameState, state.NameState);
+                            ChangeLabel2StateFromAndTo(stateFrom.NameState, stateTo.NameState, exp);
                         }
                     }
                 }
@@ -754,6 +759,11 @@ namespace ConceptsOfProgrammingLanguages
             bm = new Bitmap(bm, size);
             bm.MakeTransparent();
             return new Cursor(bm.GetHicon());
+        }
+
+        private void HandleCursor()
+        {
+            ChangeCursorImage();
         }
 
         private void BtnShowResult_Click(object sender, EventArgs e)

@@ -70,6 +70,7 @@
       <DependentUpon>ShowResult.cs</DependentUpon>
     </Compile>
     <Compile Include="TempConnector.cs" />
+    <Compile Include="TempState.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
