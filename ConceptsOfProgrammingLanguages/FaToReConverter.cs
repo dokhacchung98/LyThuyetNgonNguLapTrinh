@@ -20,8 +20,17 @@ namespace ConceptsOfProgrammingLanguages
 
         public static StateConnector GrossConnector(StateConnector stateConnector)
         {
-            string label = stateConnector.Label.Text.Replace(" ", LAMBDA).Replace(",", OR);
-            stateConnector.Label.Text = label;
+            string label = stateConnector.Label.Text.Replace(" ", LAMBDA);
+            IList<string> characters = label.Split(',').ToList();
+            string result = "";
+            foreach (var item in characters)
+            {
+                if (!item.Equals(VALUE_E.ToString()))
+                {
+                    result += OR + item;
+                }
+            }
+            stateConnector.Label.Text = result.TrimStart(OR.ToCharArray());
             return stateConnector;
         }
     }

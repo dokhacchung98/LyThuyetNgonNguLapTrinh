@@ -83,7 +83,7 @@ namespace ConceptsOfProgrammingLanguages
         public static string GroupString(string str)
         {
             string result = "";
-            if (str != FaToReConverter.VALUE_NULL.ToString())
+            if (str != FaToReConverter.VALUE_NULL.ToString() && str != FaToReConverter.VALUE_E.ToString())
             {
                 if (str.Length > 1)
                 {
@@ -102,33 +102,33 @@ namespace ConceptsOfProgrammingLanguages
             return result;
         }
 
-        public static string concatenate(string r1, string r2)
+        public static string Concatenate(string r1, string r2)
         {
             if (r1 == FaToReConverter.VALUE_NULL.ToString() || r2 == FaToReConverter.VALUE_NULL.ToString())
                 return FaToReConverter.VALUE_NULL.ToString();
-            else if (r1.Equals(FaToReConverter.LAMBDA))
+            else if (r1.Equals(FaToReConverter.LAMBDA) || r1.Equals(FaToReConverter.VALUE_E.ToString()))
                 return r2;
-            else if (r2.Equals(FaToReConverter.LAMBDA))
+            else if (r2.Equals(FaToReConverter.LAMBDA) || r2.Equals(FaToReConverter.VALUE_E.ToString()))
                 return r1;
-            if (or(r1).Length > 1)
-                r1 = addParen(r1);
-            if (or(r2).Length > 1)
-                r2 = addParen(r2);
+            if (Or(r1).Length > 1)
+                r1 = AddParen(r1);
+            if (Or(r2).Length > 1)
+                r2 = AddParen(r2);
             return r1 + r2;
         }
 
-        public static string addParen(string word)
+        public static string AddParen(string word)
         {
             return FaToReConverter.LEFT_PAREN + word + FaToReConverter.RIGHT_PAREN;
         }
 
-        public static string star(string r1)
+        public static string Star(string r1)
         {
-            if (r1 == FaToReConverter.VALUE_NULL.ToString() || r1 == FaToReConverter.LAMBDA.ToString())
+            if (r1 == FaToReConverter.VALUE_NULL.ToString() || r1 == FaToReConverter.LAMBDA.ToString() || r1 == FaToReConverter.VALUE_E.ToString())
                 return FaToReConverter.LAMBDA;
-            if (or(r1).Length > 1 || cat(r1).Length > 1)
+            if (Or(r1).Length > 1 || cat(r1).Length > 1)
             {
-                r1 = addParen(r1);
+                r1 = AddParen(r1);
             }
             else
             {
@@ -138,22 +138,22 @@ namespace ConceptsOfProgrammingLanguages
             return r1 + FaToReConverter.KLEENE_STAR;
         }
 
-        public static string or(string r1, string r2)
+        public static string Or(string r1, string r2)
         {
-            if (r1 == FaToReConverter.VALUE_NULL.ToString())
+            if (r1 == FaToReConverter.VALUE_NULL.ToString() || r1 == FaToReConverter.VALUE_E.ToString())
                 return r2;
-            if (r2 == FaToReConverter.VALUE_NULL.ToString())
+            if (r2 == FaToReConverter.VALUE_NULL.ToString() || r2 == FaToReConverter.VALUE_E.ToString())
                 return r1;
             if (r1 == FaToReConverter.LAMBDA.ToString() && r2 == FaToReConverter.LAMBDA.ToString())
-                return FaToReConverter.LAMBDA;
-            if (r1 == FaToReConverter.LAMBDA)
-                r1 = FaToReConverter.VALUE_E.ToString();
-            if (r2 == FaToReConverter.LAMBDA)
-                r2 = FaToReConverter.VALUE_E.ToString();
+                return FaToReConverter.VALUE_E.ToString();
+            if (r1 == FaToReConverter.LAMBDA || r1 == FaToReConverter.VALUE_E.ToString())
+                return r2;
+            if (r2 == FaToReConverter.LAMBDA || r2 == FaToReConverter.VALUE_E.ToString())
+                return r1;
             return r1 + FaToReConverter.OR + r2;
         }
 
-        public static string[] or(string expression)
+        public static string[] Or(string expression)
         {
             List<string> se = new List<string>();
             int start = 0;
@@ -169,13 +169,13 @@ namespace ConceptsOfProgrammingLanguages
                 if (level != 0)
                     continue;
                 // First level or!
-                se.Add(delambda(expression.Substring(start, i)));
+                se.Add(Delambda(expression.Substring(start, i)));
                 start = i + 1;
             }
-            se.Add(delambda(expression.Substring(start)));
+            se.Add(Delambda(expression.Substring(start)));
             return se.ToArray();
         }
-        public static string delambda(string s)
+        public static string Delambda(string s)
         {
             return s.Equals(FaToReConverter.VALUE_E.ToString()) ? "" : s;
         }
@@ -205,30 +205,30 @@ namespace ConceptsOfProgrammingLanguages
                 // Not an operator, and on the first level!
                 if (i == 0)
                     continue;
-                se.Add(delambda(expression.Substring(start, i)));
+                se.Add(Delambda(expression.Substring(start, i)));
                 start = i;
             }
-            se.Add(delambda(expression.Substring(start)));
+            se.Add(Delambda(expression.Substring(start)));
             return se.ToArray();
         }
 
-        public static string getExpressionFromGTG(IList<ItemTableConnector> list, string start, string end)
+        public static string GetExpressionFromGTG(IList<ItemTableConnector> list, string start, string end)
         {
             string ii = list.Where(t => t.SourceState == start && t.DestinationState == start).FirstOrDefault().Value;
             string ij = list.Where(t => t.SourceState == start && t.DestinationState == end).FirstOrDefault().Value;
             string jj = list.Where(t => t.SourceState == end && t.DestinationState == end).FirstOrDefault().Value;
             string ji = list.Where(t => t.SourceState == end && t.DestinationState == start).FirstOrDefault().Value;
 
-            return getFinalExpression(ii, ij, jj, ji);
+            return GetFinalExpression(ii, ij, jj, ji);
         }
 
-        public static string getFinalExpression(string ii, string ij, string jj, string ji)
+        public static string GetFinalExpression(string ii, string ij, string jj, string ji)
         {
-            string temp = concatenate(star(ii), concatenate(ij, concatenate(
-                    star(jj), ji)));
-            string temp2 = concatenate(star(ii), concatenate(ij, star(jj)));
+            string temp = Concatenate(Star(ii), Concatenate(ij, Concatenate(
+                    Star(jj), ji)));
+            string temp2 = Concatenate(Star(ii), Concatenate(ij, Star(jj)));
 
-            string expression = concatenate(star(temp), temp2);
+            string expression = Concatenate(Star(temp), temp2);
             return expression;
         }
     }

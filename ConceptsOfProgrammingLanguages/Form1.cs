@@ -14,6 +14,7 @@ namespace ConceptsOfProgrammingLanguages
     public partial class Form1 : Form
     {
         private IList<State> _State_arr = new List<State>();
+        private IList<State> _State_arr_Result = new List<State>();
         Selectable _selectable;
         Selectable _selectableResult;
         private int _lastIndexOfState = 1;
@@ -303,8 +304,10 @@ namespace ConceptsOfProgrammingLanguages
         //tạo 1 automata mới lưu trữ trạng thái cũ
         private void HandleImage()
         {
+            _State_arr_Result.Clear();
             foreach (var item in _State_arr)
             {
+                _State_arr_Result.Add(item);
                 automataViewResult.States.Add(item);
             }
 
@@ -342,7 +345,7 @@ namespace ConceptsOfProgrammingLanguages
         //mở form mới hiển thị kết quả cuối cùng
         private void ShowResultConvertSuccess()
         {
-            string result = Extention.getExpressionFromGTG(_listItemConnector, _nameStartState, _nameFinalState);
+            string result = Extention.GetExpressionFromGTG(_listItemConnector, _nameStartState, _nameFinalState);
             ResultReAfterConvert = FormatResult(result);
             ShowResult showResult = new ShowResult();
             showResult.Show();
@@ -492,7 +495,7 @@ namespace ConceptsOfProgrammingLanguages
                     }
                     if (tmp != null)
                     {
-                        value = tmp.Label.Text.Replace(" ", FaToReConverter.LAMBDA).Replace(",", FaToReConverter.OR);
+                        value = tmp.Label.Text.Replace(" ", FaToReConverter.LAMBDA).Replace(",", FaToReConverter.OR).Replace(FaToReConverter.VALUE_E.ToString(), FaToReConverter.LAMBDA).Trim(FaToReConverter.OR.ToCharArray());
                     }
                     _listItemConnector.Add(new ItemTableConnector()
                     {
@@ -711,10 +714,10 @@ namespace ConceptsOfProgrammingLanguages
             string kk = getExpressionBetweenStates(k, k);
             string kq = getExpressionBetweenStates(k, q);
 
-            string temp1 = Extention.star(kk);
-            string temp2 = Extention.concatenate(pk, temp1);
-            string temp3 = Extention.concatenate(temp2, kq);
-            string label = Extention.or(pq, temp3);
+            string temp1 = Extention.Star(kk);
+            string temp2 = Extention.Concatenate(pk, temp1);
+            string temp3 = Extention.Concatenate(temp2, kq);
+            string label = Extention.Or(pq, temp3);
             return label;
         }
 
