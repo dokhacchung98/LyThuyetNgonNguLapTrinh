@@ -399,6 +399,8 @@ namespace ConceptsOfProgrammingLanguages
             if (!check)
             {
                 var state = new State("q0");
+                state.X = 50;
+                state.Y = 50;
                 _State_arr.Add(state);
                 automataView.States.Add(state);
                 automataView.SetStartState(state);
