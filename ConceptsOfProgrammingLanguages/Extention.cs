@@ -8,107 +8,13 @@ namespace ConceptsOfProgrammingLanguages
 {
     public class Extention
     {
-        public static string JoinString(string source, string destination, string operation)
-        {
-            string result = "";
-            string va1 = "";
-            string va2 = "";
-            if (operation == FaToReConverter.OR)
-            {
-                if (source != FaToReConverter.VALUE_NULL.ToString())
-                {
-                    if (source.Length > 1)
-                    {
-                        va1 += FaToReConverter.LEFT_PAREN + source + FaToReConverter.RIGHT_PAREN;
-                    }
-                    else
-                    {
-                        va1 += source;
-                    }
-                }
-
-                if (destination != FaToReConverter.VALUE_NULL.ToString())
-                    if (destination.Length > 1)
-                    {
-                        va2 += FaToReConverter.LEFT_PAREN + destination + FaToReConverter.RIGHT_PAREN;
-                    }
-                    else
-                    {
-                        va2 += destination;
-                    }
-            }
-            else
-            {
-                if (source != FaToReConverter.VALUE_NULL.ToString())
-                    if (source.Length > 1)
-                    {
-                        va1 += FaToReConverter.LEFT_PAREN + source + FaToReConverter.RIGHT_PAREN;
-                    }
-                    else
-                    {
-                        va1 += source;
-                    }
-
-                if (destination != FaToReConverter.VALUE_NULL.ToString())
-                    if (destination.Length > 1)
-                    {
-                        va2 += FaToReConverter.LEFT_PAREN + destination + FaToReConverter.RIGHT_PAREN;
-                    }
-                    else
-                    {
-                        va2 += destination;
-                    }
-            }
-
-            if (va1 != FaToReConverter.LAMBDA && va2 != FaToReConverter.LAMBDA)
-            {
-                result = va1 + operation + va2;
-            }
-            else if (va1 != FaToReConverter.LAMBDA && va2 == FaToReConverter.LAMBDA)
-            {
-                result = va1;
-            }
-            else if (va2 != FaToReConverter.LAMBDA && va1 == FaToReConverter.LAMBDA)
-            {
-                result = va2;
-            }
-
-            if (result == FaToReConverter.LAMBDA)
-            {
-                result = FaToReConverter.VALUE_NULL.ToString();
-            }
-            return result;
-        }
-
-        public static string GroupString(string str)
-        {
-            string result = "";
-            if (str != FaToReConverter.VALUE_NULL.ToString() && str != FaToReConverter.VALUE_E.ToString())
-            {
-                if (str.Length > 1)
-                {
-                    result = FaToReConverter.LEFT_PAREN + str + FaToReConverter.RIGHT_PAREN;
-                }
-                else
-                {
-                    result = str;
-                }
-                result += FaToReConverter.KLEENE_STAR;
-            }
-            else
-            {
-                result = FaToReConverter.VALUE_NULL.ToString();
-            }
-            return result;
-        }
-
         public static string Concatenate(string r1, string r2)
         {
             if (r1 == FaToReConverter.VALUE_NULL.ToString() || r2 == FaToReConverter.VALUE_NULL.ToString())
                 return FaToReConverter.VALUE_NULL.ToString();
-            else if (r1.Equals(FaToReConverter.LAMBDA) || r1.Equals(FaToReConverter.VALUE_E.ToString()))
+            else if (r1.Equals(FaToReConverter.VALUE_E.ToString()))
                 return r2;
-            else if (r2.Equals(FaToReConverter.LAMBDA) || r2.Equals(FaToReConverter.VALUE_E.ToString()))
+            else if (r2.Equals(FaToReConverter.VALUE_E.ToString()))
                 return r1;
             if (Or(r1).Length > 1)
                 r1 = AddParen(r1);
@@ -140,16 +46,32 @@ namespace ConceptsOfProgrammingLanguages
 
         public static string Or(string r1, string r2)
         {
-            if (r1 == FaToReConverter.VALUE_NULL.ToString() || r1 == FaToReConverter.VALUE_E.ToString())
+            if (r1 == FaToReConverter.VALUE_NULL.ToString())
                 return r2;
-            if (r2 == FaToReConverter.VALUE_NULL.ToString() || r2 == FaToReConverter.VALUE_E.ToString())
+            if (r2 == FaToReConverter.VALUE_NULL.ToString())
                 return r1;
-            if (r1 == FaToReConverter.LAMBDA.ToString() && r2 == FaToReConverter.LAMBDA.ToString())
-                return FaToReConverter.VALUE_E.ToString();
-            if (r1 == FaToReConverter.LAMBDA || r1 == FaToReConverter.VALUE_E.ToString())
-                return r2;
-            if (r2 == FaToReConverter.LAMBDA || r2 == FaToReConverter.VALUE_E.ToString())
-                return r1;
+            if (r1 == FaToReConverter.VALUE_E.ToString() || r1 == FaToReConverter.LAMBDA)
+            {
+                if (r2 == FaToReConverter.VALUE_NULL.ToString() || r2 == FaToReConverter.VALUE_E.ToString() || r2 == FaToReConverter.LAMBDA)
+                {
+                    return FaToReConverter.VALUE_E.ToString();
+                }
+                else
+                {
+                    return r2;
+                }
+            }
+            else if (r2 == FaToReConverter.VALUE_E.ToString() || r2 == FaToReConverter.LAMBDA)
+            {
+                if (r1 == FaToReConverter.VALUE_NULL.ToString() || r1 == FaToReConverter.VALUE_E.ToString() || r1 == FaToReConverter.LAMBDA)
+                {
+                    return FaToReConverter.VALUE_E.ToString();
+                }
+                else
+                {
+                    return r1;
+                }
+            }
             return r1 + FaToReConverter.OR + r2;
         }
 
@@ -177,7 +99,7 @@ namespace ConceptsOfProgrammingLanguages
         }
         public static string Delambda(string s)
         {
-            return s.Equals(FaToReConverter.VALUE_E.ToString()) ? "" : s;
+            return s.Equals(FaToReConverter.VALUE_E.ToString()) ? FaToReConverter.LAMBDA : s;
         }
         public static string[] cat(string expression)
         {

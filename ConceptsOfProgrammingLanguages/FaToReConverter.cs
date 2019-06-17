@@ -25,12 +25,12 @@ namespace ConceptsOfProgrammingLanguages
             string result = "";
             foreach (var item in characters)
             {
-                if (!item.Equals(VALUE_E.ToString()))
+                if (item != VALUE_E.ToString())
                 {
                     result += OR + item;
                 }
             }
-            stateConnector.Label.Text = result.TrimStart(OR.ToCharArray());
+            stateConnector.Label.Text = result.Trim(OR.ToCharArray());
             return stateConnector;
         }
     }

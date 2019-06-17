@@ -466,7 +466,6 @@ namespace ConceptsOfProgrammingLanguages
                 }
             }
 
-            //CreateDataTable();
             automataView.Refresh();
         }
 
@@ -497,7 +496,11 @@ namespace ConceptsOfProgrammingLanguages
                     }
                     if (tmp != null)
                     {
-                        value = tmp.Label.Text.Replace(" ", FaToReConverter.LAMBDA).Replace(",", FaToReConverter.OR).Replace(FaToReConverter.VALUE_E.ToString(), FaToReConverter.LAMBDA).Trim(FaToReConverter.OR.ToCharArray());
+                        value = tmp.Label.Text.Replace(" ", FaToReConverter.LAMBDA);
+                        if (value.Contains(','))
+                        {
+                            value = value.Replace(",", FaToReConverter.OR).Replace(FaToReConverter.VALUE_E.ToString(), FaToReConverter.LAMBDA).Replace("++", FaToReConverter.OR).Trim(FaToReConverter.OR.ToArray());
+                        }
                     }
                     _listItemConnector.Add(new ItemTableConnector()
                     {
@@ -596,6 +599,7 @@ namespace ConceptsOfProgrammingLanguages
                     finalState.AddTransition(connector.Value.ToCharArray(), startState);
                 }
             }
+
             automataView.BuildAutomata();
             automataView.Invalidate();
             automataView.Refresh();
@@ -628,6 +632,26 @@ namespace ConceptsOfProgrammingLanguages
             }
 
             VisiableBtnShowResult();
+            IList<ItemTableConnector> tmp1 = new List<ItemTableConnector>();
+            foreach (var item in _listItemConnector)
+            {
+                if (item.Value == FaToReConverter.LAMBDA)
+                {
+                    tmp1.Add(item);
+                }
+            }
+
+            foreach (var item in tmp1)
+            {
+
+                _listItemConnector.Remove(item);
+                _listItemConnector.Add(new ItemTableConnector()
+                {
+                    SourceState = item.SourceState,
+                    DestinationState = item.DestinationState,
+                    Value = FaToReConverter.VALUE_E.ToString()
+                });
+            }
 
             foreach (var stt1 in _State_arr)
             {
@@ -662,6 +686,7 @@ namespace ConceptsOfProgrammingLanguages
         //Xóa state đã xét
         private void RemoveState(TempState stateRemove)
         {
+
             _listNameState.Remove(stateRemove);
             foreach (var item in _listItemConnector.ToList())
             {
@@ -745,10 +770,12 @@ namespace ConceptsOfProgrammingLanguages
             };
             _listItemConnector.Remove(itemOld);
             _listItemConnector.Add(itemNew);
+
         }
 
         private ItemTableConnector GetItemTableBySourceAndDes(string source, string des)
         {
+
             return _listItemConnector.Where(t => t.SourceState == source && t.DestinationState == des).FirstOrDefault();
         }
 
